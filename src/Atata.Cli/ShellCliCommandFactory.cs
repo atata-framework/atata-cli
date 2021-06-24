@@ -10,12 +10,13 @@ namespace Atata.Cli
         /// <inheritdoc/>
         public CliCommand Create(string fileNameOrCommand, string arguments)
         {
-            (string actualFileName, string actualArguments) = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? ("cmd.exe", $"/c {fileNameOrCommand}")
-                : ("/bin/bash", $"-c \"{fileNameOrCommand}\"");
+            string argumentsPart = string.IsNullOrEmpty(arguments)
+                ? null
+                : $" {arguments}";
 
-            if (!string.IsNullOrEmpty(arguments))
-                actualArguments += $" {arguments}";
+            (string actualFileName, string actualArguments) = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? ("cmd.exe", $"/c {fileNameOrCommand}{argumentsPart}")
+                : ("/bin/bash", $"-c '{fileNameOrCommand}{argumentsPart}'");
 
             return new CliCommand(actualFileName, actualArguments);
         }
