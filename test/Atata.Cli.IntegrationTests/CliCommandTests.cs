@@ -28,7 +28,7 @@ namespace Atata.Cli.IntegrationTests
                 .Act(x => x.Start())
                 .ResultOf(x => x.Kill())
 
-                .ValueOf(x => x.ExitCode).Should.Equal(-1)
+                .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
                 .ValueOf(x => x.Output).Should.BeEmpty()
                 .ValueOf(x => x.Error).Should.BeEmpty();
         }
