@@ -11,14 +11,17 @@ namespace Atata.Cli
         public CliCommand Create(string fileNameOrCommand, string arguments)
         {
             string argumentsPart = string.IsNullOrEmpty(arguments)
-                ? null
+                ? string.Empty
                 : $" {arguments}";
 
             (string actualFileName, string actualArguments) = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? ("cmd.exe", $"/c {fileNameOrCommand}{argumentsPart}")
-                : ("/bin/bash", $"-c '{fileNameOrCommand}{argumentsPart}'");
+                : ("bash", $"-c \"{fileNameOrCommand}{EscapeDoubleQuotes(argumentsPart)}\"");
 
             return new CliCommand(actualFileName, actualArguments);
         }
+
+        private static string EscapeDoubleQuotes(string value) =>
+            value.Replace("\"", "\\\"");
     }
 }
