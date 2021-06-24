@@ -2,13 +2,21 @@
 
 namespace Atata.Cli.IntegrationTests
 {
-    [TestFixture]
-    public class ProgramCliTests
+    [TestFixture(true)]
+    [TestFixture(false)]
+    public class ProgramCliWithUseCommandShellTests
     {
+        private readonly bool _useCommandShell;
+
+        public ProgramCliWithUseCommandShellTests(bool useCommandShell)
+        {
+            _useCommandShell = useCommandShell;
+        }
+
         [Test]
         public void Execute_WithValidArguments()
         {
-            var sut = new ProgramCli("dotnet").ToSutSubject();
+            var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
 
             sut.ResultOf(x => x.Execute("--version"))
                 .ValueOf(x => x.ExitCode).Should.Equal(0)
@@ -19,20 +27,19 @@ namespace Atata.Cli.IntegrationTests
         [Test]
         public void Execute_WithInvalidArguments()
         {
-            var sut = new ProgramCli("dotnet");
+            var sut = new ProgramCli("dotnet", _useCommandShell);
 
             var exception = Assert.Throws<CliCommandException>(() =>
                 sut.Execute("--unknownflag"));
 
             exception.ToResultSubject()
-                .ValueOf(x => x.Message).Should.StartWith("CLI command failure: dotnet --unknownflag");
+                .ValueOf(x => x.Message).Should.Contain("dotnet --unknownflag");
         }
 
         [Test]
-        public void Execute_ForMissingCli_UseCommandShell(
-            [Values(true, false)] bool useCommandShell)
+        public void Execute_ForMissingCli()
         {
-            var sut = new ProgramCli("somemissingprogram", useCommandShell);
+            var sut = new ProgramCli("somemissingprogram", _useCommandShell);
 
             Assert.Throws<CliCommandException>(() =>
                 sut.Execute());
