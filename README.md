@@ -2,6 +2,7 @@
 
 [![NuGet](http://img.shields.io/nuget/v/Atata.Cli.svg?style=flat)](https://www.nuget.org/packages/Atata.Cli/)
 [![GitHub release](https://img.shields.io/github/release/atata-framework/atata-cli.svg)](https://github.com/atata-framework/atata-cli/releases)
+[![Build status](https://dev.azure.com/atata-framework/atata-cli/_apis/build/status/atata-cli-ci?branchName=main)](https://dev.azure.com/atata-framework/atata-cli/_build/latest?definitionId=41&branchName=main)
 [![Slack](https://img.shields.io/badge/join-Slack-green.svg?colorB=4EB898)](https://join.slack.com/t/atata-framework/shared_invite/zt-5j3lyln7-WD1ZtMDzXBhPm0yXLDBzbA)
 [![Atata docs](https://img.shields.io/badge/docs-Atata_Framework-orange.svg)](https://atata.io)
 [![Twitter](https://img.shields.io/badge/follow-@AtataFramework-blue.svg)](https://twitter.com/AtataFramework)
@@ -39,7 +40,12 @@ Install [`Atata.Cli`](https://www.nuget.org/packages/Atata.Cli/) NuGet package.
 
 ## Usage
 
-To be added...
+```cs
+CliCommandResult result = new ProgramCli("dotnet")
+    .Execute("--version");
+
+string version = result.Output;
+```
 
 ## Feedback
 
