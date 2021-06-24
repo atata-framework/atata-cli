@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using NUnit.Framework;
 
 namespace Atata.Cli.IntegrationTests
 {
@@ -20,7 +23,24 @@ namespace Atata.Cli.IntegrationTests
 
             sut.ResultOf(x => x.Execute("--version"))
                 .ValueOf(x => x.ExitCode).Should.Equal(0)
-                .ValueOf(x => x.Output).Should.Not.BeNullOrWhiteSpace()
+                .ValueOf(x => x.Output).Should.Contain(".")
+                .ValueOf(x => x.Error).Should.BeEmpty();
+        }
+
+        [Test]
+        public void Execute_WithStringArgument()
+        {
+            var sut = new ProgramCli("dotnet", _useCommandShell)
+            {
+                WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../")
+            }.ToSutSubject();
+
+            string projectName = Assembly.GetAssembly(GetType()).GetName().Name;
+            string arguments = $"restore \"{projectName}.csproj\"";
+
+            sut.ResultOf(x => x.Execute(arguments))
+                .ValueOf(x => x.ExitCode).Should.Equal(0)
+                .ValueOf(x => x.Output).Should.Contain("restore...")
                 .ValueOf(x => x.Error).Should.BeEmpty();
         }
 

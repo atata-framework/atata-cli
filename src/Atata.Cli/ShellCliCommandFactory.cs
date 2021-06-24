@@ -15,7 +15,7 @@ namespace Atata.Cli
                 : $" {arguments}";
 
             (string actualFileName, string actualArguments) = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? ("cmd.exe", $"/c {fileNameOrCommand}{argumentsPart}")
+                ? ("cmd", $"/c {fileNameOrCommand}{argumentsPart}")
                 : ("bash", $"-c \"{fileNameOrCommand}{EscapeDoubleQuotes(argumentsPart)}\"");
 
             return new CliCommand(actualFileName, actualArguments);
