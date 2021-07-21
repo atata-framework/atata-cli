@@ -85,6 +85,17 @@ namespace Atata.Cli
         }
 
         /// <summary>
+        /// Sets the working directory.
+        /// </summary>
+        /// <param name="workingDirectory">The working directory.</param>
+        /// <returns>The same instance.</returns>
+        public ProgramCli WithWorkingDirectory(string workingDirectory)
+        {
+            WorkingDirectory = workingDirectory.CheckNotNullOrWhitespace(nameof(workingDirectory));
+            return this;
+        }
+
+        /// <summary>
         /// Starts the program with the specified arguments.
         /// </summary>
         /// <param name="arguments">The arguments.</param>
