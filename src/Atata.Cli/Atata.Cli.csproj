@@ -8,10 +8,10 @@
 Targets .NET Standard 2.0.
 
 Features:
-- Provides an abstraction over `System.Diagnostics.Process` with `CliCommand` and `ProgramCli` classes.
+- Provides an abstraction over System.Diagnostics.Process with CliCommand and ProgramCli classes.
 - Has ability to execute CLI through command shell (cmd/bash).
 - Provides synchronous and asynchronous API methods.
-- Works on Windows, Linux, and macOS.</Description>
+- Works on Windows, Linux and macOS.</Description>
     <RepositoryUrl>https://github.com/atata-framework/atata-cli</RepositoryUrl>
     <PackageId>Atata.Cli</PackageId>
     <PackageTags>atata cli api</PackageTags>

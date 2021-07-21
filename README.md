@@ -25,7 +25,7 @@
 - Provides an abstraction over `System.Diagnostics.Process` with `CliCommand` and `ProgramCli` classes.
 - Has ability to execute CLI through command shell (cmd/bash).
 - Provides synchronous and asynchronous API methods.
-- Works on Windows, Linux, and macOS.
+- Works on Windows, Linux and macOS.
 
 ## Installation
 
