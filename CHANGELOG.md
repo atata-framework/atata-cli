@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `HasError` property to `CliCommandResult`.
 - Add `WithWorkingDirectory(string)` method to `ProgramCli` and `ProgramCli<TCli>`.
 
+### Changed
+
+- Change access modifier of `ProgramCli.ExecuteRaw(string)` method from `protected` to `public`.
+
 ## [1.1.0] - 2021-06-24
 
 ### Fixed

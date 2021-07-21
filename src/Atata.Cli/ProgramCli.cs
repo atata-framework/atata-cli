@@ -124,7 +124,7 @@ namespace Atata.Cli
 
         /// <summary>
         /// Starts the program with the specified arguments and waits until it exits.
-        /// Throws <see cref="CliCommandException"/> if program result contains an error.
+        /// Throws <see cref="CliCommandException"/> if program result has an error.
         /// </summary>
         /// <param name="arguments">The arguments.</param>
         /// <returns>The <see cref="CliCommandResult"/> instance.</returns>
@@ -147,7 +147,7 @@ namespace Atata.Cli
         /// </summary>
         /// <param name="arguments">The arguments.</param>
         /// <returns>The <see cref="CliCommandResult"/> instance.</returns>
-        protected CliCommandResult ExecuteRaw(string arguments = null)
+        public CliCommandResult ExecuteRaw(string arguments = null)
         {
             using (var command = Start(arguments))
             {
