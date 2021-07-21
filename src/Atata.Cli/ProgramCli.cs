@@ -121,7 +121,7 @@ namespace Atata.Cli
         {
             CliCommandResult result = ExecuteRaw(arguments);
 
-            if (!string.IsNullOrEmpty(result.Error))
+            if (result.HasError)
                 throw CliCommandException.Create(result.CommandText, result.Error, result.Output);
             else
                 return result;

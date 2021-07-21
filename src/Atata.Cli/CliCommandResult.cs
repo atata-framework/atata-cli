@@ -24,5 +24,11 @@
         /// Gets the command error.
         /// </summary>
         public string Error { get; internal set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the result has an error.
+        /// </summary>
+        public bool HasError =>
+            !string.IsNullOrEmpty(Error);
     }
 }
