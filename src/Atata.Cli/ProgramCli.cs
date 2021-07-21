@@ -154,5 +154,9 @@ namespace Atata.Cli
                 return command.WaitForExit(WaitForExitTimeout);
             }
         }
+
+        /// <inheritdoc cref="ExecuteRaw(string)"/>
+        public async Task<CliCommandResult> ExecuteRawAsync(string arguments = null) =>
+            await Task.Run(() => ExecuteRaw(arguments));
     }
 }

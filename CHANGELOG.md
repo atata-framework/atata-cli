@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `HasError` property to `CliCommandResult`.
 - Add `WithWorkingDirectory(string)` method to `ProgramCli` and `ProgramCli<TCli>`.
+- Add `ExecuteRawAsync(string)` method to `ProgramCli`.
 
 ### Changed
 
