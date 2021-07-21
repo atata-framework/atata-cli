@@ -22,7 +22,10 @@
 
 ## Features
 
-To be added...
+- Provides an abstraction over `System.Diagnostics.Process` with `CliCommand` and `ProgramCli` classes.
+- Has ability to execute CLI through command shell (cmd/bash).
+- Provides synchronous and asynchronous API methods.
+- Works on Windows, Linux, and macOS.
 
 ## Installation
 
@@ -40,11 +43,28 @@ Install [`Atata.Cli`](https://www.nuget.org/packages/Atata.Cli/) NuGet package.
 
 ## Usage
 
+### Execute Command to Get Value
+
 ```cs
 CliCommandResult result = new ProgramCli("dotnet")
     .Execute("--version");
 
 string version = result.Output;
+```
+
+### Execute Command in Directory
+
+```cs
+new ProgramCli("dotnet")
+    .WithWorkingDirectory("some/path")
+    .Execute("build -c Release");
+```
+
+### Execute Command Through Command Shell
+
+```cs
+new ProgramCli("npm", useCommandShell: true)
+    .Execute("install -g html-validate");
 ```
 
 ## Feedback
