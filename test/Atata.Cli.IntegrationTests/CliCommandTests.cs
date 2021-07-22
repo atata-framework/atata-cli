@@ -17,11 +17,15 @@ namespace Atata.Cli.IntegrationTests
                 sut.Start());
 
             exception.ToSubject(nameof(exception))
-                .ValueOf(x => x.Message).Should.Equal(
-@$"The directory name is invalid.
-
+                .ValueOf(x => x.Message).Should.MatchAny(
+                    TermMatch.StartsWith,
+                    "The directory name is invalid.",
+                    "No such file or directory.")
+                .ValueOf(x => x.Message).Should.EndWith(
+@$"
 CLI command: dotnet --version
-Working directory: {sut.StartInfo.WorkingDirectory}");
+Working directory: {sut.StartInfo.WorkingDirectory}")
+                .ValueOf(x => x.InnerException).Should.Not.BeNull();
         }
 
         [Test]
@@ -33,9 +37,12 @@ Working directory: {sut.StartInfo.WorkingDirectory}");
                 sut.Start());
 
             exception.ToSubject(nameof(exception))
-                .ValueOf(x => x.Message).Should.Equal(
-@$"The system cannot find the file specified.
-
+                .ValueOf(x => x.Message).Should.MatchAny(
+                    TermMatch.StartsWith,
+                    "The system cannot find the file specified.",
+                    "No such file or directory.")
+                .ValueOf(x => x.Message).Should.EndWith(
+@$"
 CLI command: somemissingprogram
 Working directory: {sut.StartInfo.WorkingDirectory}")
                 .ValueOf(x => x.InnerException).Should.Not.BeNull();

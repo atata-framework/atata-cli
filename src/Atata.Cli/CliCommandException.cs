@@ -110,8 +110,13 @@ namespace Atata.Cli
             string output,
             Exception innerException)
         {
-            StringBuilder messageBuilder = new StringBuilder()
-                .AppendLine(error)
+            StringBuilder messageBuilder = new StringBuilder(error);
+
+            if (!error.EndsWith("."))
+                messageBuilder.Append('.');
+
+            messageBuilder
+                .AppendLine()
                 .AppendLine()
                 .Append("CLI command: ")
                 .Append(commandText);
@@ -123,12 +128,10 @@ namespace Atata.Cli
                     .Append(workingDirectory);
 
             if (!string.IsNullOrWhiteSpace(output))
-            {
                 messageBuilder
                     .AppendLine()
                     .AppendLine("Output:")
                     .Append(output);
-            }
 
             return new CliCommandException(
                 messageBuilder.ToString(),
