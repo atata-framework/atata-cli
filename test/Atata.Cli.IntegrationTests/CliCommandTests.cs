@@ -1,10 +1,60 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.IO;
+using NUnit.Framework;
 
 namespace Atata.Cli.IntegrationTests
 {
     [TestFixture]
     public class CliCommandTests
     {
+        [Test]
+        public void Start_WithMissingDirectory()
+        {
+            using var sut = new CliCommand("dotnet", "--version");
+            sut.StartInfo.WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString());
+
+            var exception = Assert.Throws<CliCommandException>(() =>
+                sut.Start());
+
+            exception.ToSubject(nameof(exception))
+                .ValueOf(x => x.Message).Should.Equal(
+@$"The directory name is invalid.
+
+CLI command: dotnet --version
+Working directory: {sut.StartInfo.WorkingDirectory}");
+        }
+
+        [Test]
+        public void Start_WithMissingFileName()
+        {
+            using var sut = new CliCommand("somemissingprogram");
+
+            var exception = Assert.Throws<CliCommandException>(() =>
+                sut.Start());
+
+            exception.ToSubject(nameof(exception))
+                .ValueOf(x => x.Message).Should.Equal(
+@$"The system cannot find the file specified.
+
+CLI command: somemissingprogram
+Working directory: {sut.StartInfo.WorkingDirectory}")
+                .ValueOf(x => x.InnerException).Should.Not.BeNull();
+        }
+
+        [Test]
+        public void Start_WithInvalidArguments()
+        {
+            using var sut = new CliCommand("dotnet", "--unknownarg");
+
+            sut.ToSutSubject()
+                .Act(x => x.Start())
+                .ResultOf(x => x.WaitForExit(null))
+
+                .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
+                .ValueOf(x => x.Output).Should.Not.BeNullOrWhiteSpace()
+                .ValueOf(x => x.Error).Should.Not.BeNullOrWhiteSpace();
+        }
+
         [Test]
         public void WaitForExit()
         {

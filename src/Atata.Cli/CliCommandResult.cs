@@ -11,6 +11,11 @@
         public string CommandText { get; internal set; }
 
         /// <summary>
+        /// Gets the working directory.
+        /// </summary>
+        public string WorkingDirectory { get; internal set; }
+
+        /// <summary>
         /// Gets the command exit code.
         /// </summary>
         public int ExitCode { get; internal set; }

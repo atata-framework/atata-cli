@@ -54,16 +54,77 @@ namespace Atata.Cli
         /// <param name="output">The output.</param>
         /// <param name="innerException">The inner exception.</param>
         /// <returns>The <see cref="CliCommandException"/> instance.</returns>
-        public static CliCommandException Create(string commandText, string error, string output = null, Exception innerException = null)
+        [Obsolete("Use constructor instead.")] // Obsolete since v1.3.0.
+        public static CliCommandException Create(string commandText, string error, string output = null, Exception innerException = null) =>
+            Create(
+                commandText,
+                null,
+                error,
+                output,
+                innerException);
+
+        internal static CliCommandException CreateForAlreadyStartedCommand(string commandText, string workingDirectory) =>
+            Create(
+                commandText,
+                workingDirectory,
+                "The command has already been started.",
+                null,
+                null);
+
+        internal static CliCommandException CreateForNotStartedCommand(string commandText, string workingDirectory) =>
+            Create(
+                commandText,
+                workingDirectory,
+                "The command was not started.",
+                null,
+                null);
+
+        internal static CliCommandException CreateForTimeout(string commandText, string workingDirectory) =>
+            Create(
+                commandText,
+                workingDirectory,
+                "Timed out waiting for command to execute.",
+                null,
+                null);
+
+        internal static CliCommandException CreateForErrorResult(CliCommandResult result) =>
+            Create(
+                result.CommandText,
+                result.WorkingDirectory,
+                result.Error,
+                result.Output,
+                null);
+
+        internal static CliCommandException CreateForProcessStartException(string commandText, string workingDirectory, Exception innerException) =>
+            Create(
+                commandText,
+                workingDirectory,
+                innerException.Message,
+                null,
+                innerException);
+
+        private static CliCommandException Create(
+            string commandText,
+            string workingDirectory,
+            string error,
+            string output,
+            Exception innerException)
         {
-            StringBuilder messageBuilder = new StringBuilder("CLI command failure: ")
-                .AppendLine(commandText)
-                .Append(error);
+            StringBuilder messageBuilder = new StringBuilder()
+                .AppendLine(error)
+                .AppendLine()
+                .Append("CLI command: ")
+                .Append(commandText);
+
+            if (!string.IsNullOrWhiteSpace(workingDirectory))
+                messageBuilder
+                    .AppendLine()
+                    .Append("Working directory: ")
+                    .Append(workingDirectory);
 
             if (!string.IsNullOrWhiteSpace(output))
             {
                 messageBuilder
-                    .AppendLine()
                     .AppendLine()
                     .AppendLine("Output:")
                     .Append(output);

@@ -103,7 +103,7 @@ namespace Atata.Cli
             EnsureIsNotDisposed();
 
             if (_isStarted)
-                throw new CliCommandException("The command has already been started.");
+                throw CliCommandException.CreateForAlreadyStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
             try
             {
@@ -116,7 +116,7 @@ namespace Atata.Cli
             catch (Exception exception)
             {
                 Dispose();
-                throw CliCommandException.Create(CommandText, exception.Message, innerException: exception);
+                throw CliCommandException.CreateForProcessStartException(CommandText, StartInfo.WorkingDirectory, exception);
             }
 
             return this;
@@ -134,7 +134,7 @@ namespace Atata.Cli
             EnsureIsNotDisposed();
 
             if (!_isStarted)
-                throw new CliCommandException("The command was not started.");
+                throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
             int timeoutMilliseconds = -1;
 
@@ -146,7 +146,7 @@ namespace Atata.Cli
                 if (_process.WaitForExit(timeoutMilliseconds) && _exitResetEvent.Wait(timeoutMilliseconds))
                     return _result;
                 else
-                    throw CliCommandException.Create(CommandText, "Timed out waiting for command to execute.");
+                    throw CliCommandException.CreateForTimeout(CommandText, StartInfo.WorkingDirectory);
             }
             finally
             {
@@ -165,7 +165,7 @@ namespace Atata.Cli
             EnsureIsNotDisposed();
 
             if (!_isStarted)
-                throw new CliCommandException("The command was not started.");
+                throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
             try
             {
@@ -223,6 +223,7 @@ namespace Atata.Cli
             _result = new CliCommandResult
             {
                 CommandText = CommandText,
+                WorkingDirectory = StartInfo.WorkingDirectory,
                 ExitCode = _process.ExitCode,
                 Output = _outputStringBuilder.ToString(),
                 Error = _errorStringBuilder.ToString()

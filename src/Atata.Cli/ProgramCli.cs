@@ -133,7 +133,7 @@ namespace Atata.Cli
             CliCommandResult result = ExecuteRaw(arguments);
 
             if (result.HasError)
-                throw CliCommandException.Create(result.CommandText, result.Error, result.Output);
+                throw CliCommandException.CreateForErrorResult(result);
             else
                 return result;
         }

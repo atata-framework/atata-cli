@@ -52,7 +52,7 @@ namespace Atata.Cli.IntegrationTests
             var exception = Assert.Throws<CliCommandException>(() =>
                 sut.Execute("--unknownflag"));
 
-            exception.ToResultSubject()
+            exception.ToSubject(nameof(exception))
                 .ValueOf(x => x.Message).Should.Contain("dotnet --unknownflag");
         }
 
