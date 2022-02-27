@@ -58,7 +58,7 @@ Working directory: {sut.StartInfo.WorkingDirectory}")
                 .ResultOf(x => x.WaitForExit(null))
 
                 .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
-                .ValueOf(x => x.Output).Should.BeNullOrWhiteSpace()
+                .ValueOf(x => x.Output).Should.Not.BeNullOrWhiteSpace()
                 .ValueOf(x => x.Error).Should.Not.BeNullOrWhiteSpace();
         }
 
