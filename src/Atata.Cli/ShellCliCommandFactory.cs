@@ -17,8 +17,8 @@ namespace Atata.Cli
             new ConcurrentDictionary<OSPlatform, ShellCommand>
             {
                 [OSPlatform.Windows] = new ShellCommand("cmd", "/c", escapeArguments: false),
-                [OSPlatform.Linux] = new ShellCommand("bash", "-c"),
-                [OSPlatform.OSX] = new ShellCommand("bash", "-c"),
+                [OSPlatform.Linux] = new ShellCommand("bash", "-login -c"),
+                [OSPlatform.OSX] = new ShellCommand("bash", "-login -c"),
             };
 
         /// <inheritdoc/>
