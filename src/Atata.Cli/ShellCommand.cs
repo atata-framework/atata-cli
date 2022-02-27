@@ -2,6 +2,13 @@ namespace Atata.Cli
 {
     public class ShellCommand
     {
+        public ShellCommand(string command, string requiredArguments, bool escapeArguments = true)
+        {
+            Command = command;
+            RequiredArguments = requiredArguments;
+            EscapeArguments = escapeArguments;
+        }
+
         /// <summary>
         /// Gets the shell executable's name.
         /// </summary>
@@ -19,17 +26,13 @@ namespace Atata.Cli
         /// </summary>
         public bool EscapeArguments { get; }
 
-        public ShellCommand(string command, string requiredArguments, bool escapeArguments = true)
-        {
-            Command = command;
-            RequiredArguments = requiredArguments;
-            EscapeArguments = escapeArguments;
-        }
-
         public (string FileName, string Arguments) Build(string fileNameOrCommand, string additionalArguments)
         {
             var arguments = string.IsNullOrEmpty(additionalArguments) ? string.Empty : $" {additionalArguments}";
-            if (EscapeArguments) arguments = $"\"{fileNameOrCommand}{EscapeDoubleQuotes(arguments)}\"";
+            if (EscapeArguments)
+            {
+                arguments = $"\"{fileNameOrCommand}{EscapeDoubleQuotes(arguments)}\"";
+            }
 
             return (Command, $"{RequiredArguments} {arguments}");
         }

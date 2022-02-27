@@ -25,8 +25,12 @@ namespace Atata.Cli
         public CliCommand Create(string fileNameOrCommand, string arguments)
         {
             var platform = Shells.Keys.FirstOrDefault(RuntimeInformation.IsOSPlatform);
+
             // Fallback on Linux: if it's not a listed OS (e.g. FreeBSD) it's probably still Unix-like.
-            if (!Shells.TryGetValue(platform, out var shellCommand)) shellCommand = Shells[OSPlatform.Linux];
+            if (!Shells.TryGetValue(platform, out var shellCommand))
+            {
+                shellCommand = Shells[OSPlatform.Linux];
+            }
 
             var (actualFileName, actualArguments) = shellCommand.Build(fileNameOrCommand, arguments);
 
