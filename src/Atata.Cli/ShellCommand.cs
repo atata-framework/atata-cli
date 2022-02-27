@@ -28,11 +28,9 @@ namespace Atata.Cli
 
         public (string FileName, string Arguments) Build(string fileNameOrCommand, string additionalArguments)
         {
-            var arguments = string.IsNullOrEmpty(additionalArguments) ? string.Empty : $" {additionalArguments}";
-            if (EscapeArguments)
-            {
-                arguments = $"\"{fileNameOrCommand}{EscapeDoubleQuotes(arguments)}\"";
-            }
+            var arguments = EscapeArguments
+                ? $"\"{fileNameOrCommand} {EscapeDoubleQuotes(additionalArguments ?? string.Empty)}\""
+                : $"{fileNameOrCommand} {additionalArguments ?? string.Empty}";
 
             return (Command, $"{RequiredArguments} {arguments}");
         }
