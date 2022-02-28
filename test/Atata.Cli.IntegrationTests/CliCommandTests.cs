@@ -54,24 +54,15 @@ Working directory: {sut.StartInfo.WorkingDirectory}")
         {
             using var sut = new CliCommand("dotnet", "--unknownarg");
 
-            var result = sut.ToSutSubject()
+            sut.ToSutSubject()
                 .Act(x => x.Start())
                 .ResultOf(x => x.WaitForExit(null))
 
-                .ValueOf(x => x.ExitCode).Should.Not.Equal(0);
+                .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
+                .ValueOf(x => x.Error).Should.Not.BeNullOrWhiteSpace();
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                result
-                    .ValueOf(x => x.Output).Should.BeNullOrWhiteSpace()
-                    .ValueOf(x => x.Error).Should.Not.BeNullOrWhiteSpace();
-            }
-            else
-            {
-                result
-                    .ValueOf(x => x.Output).Should.Not.BeNullOrWhiteSpace()
-                    .ValueOf(x => x.Error).Should.BeNullOrWhiteSpace();
-            }
+            // Output is not checked because depending on the OS and environment it may contain the whole usage text (as
+            // if the user typed "dotnet --help") or nothing.
         }
 
         [Test]
