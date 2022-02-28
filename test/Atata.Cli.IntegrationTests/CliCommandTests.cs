@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
 
 namespace Atata.Cli.IntegrationTests
@@ -53,13 +54,24 @@ Working directory: {sut.StartInfo.WorkingDirectory}")
         {
             using var sut = new CliCommand("dotnet", "--unknownarg");
 
-            sut.ToSutSubject()
+            var result = sut.ToSutSubject()
                 .Act(x => x.Start())
                 .ResultOf(x => x.WaitForExit(null))
 
-                .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
-                .ValueOf(x => x.Output).Should.Not.BeNullOrWhiteSpace()
-                .ValueOf(x => x.Error).Should.Not.BeNullOrWhiteSpace();
+                .ValueOf(x => x.ExitCode).Should.Not.Equal(0);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                result
+                    .ValueOf(x => x.Output).Should.BeNullOrWhiteSpace()
+                    .ValueOf(x => x.Error).Should.Not.BeNullOrWhiteSpace();
+            }
+            else
+            {
+                result
+                    .ValueOf(x => x.Output).Should.Not.BeNullOrWhiteSpace()
+                    .ValueOf(x => x.Error).Should.BeNullOrWhiteSpace();
+            }
         }
 
         [Test]
