@@ -11,8 +11,6 @@ namespace Atata.Cli
     /// </summary>
     public class ProgramCli
     {
-        private static readonly ICliCommandFactory s_shellCliCommandFactory = new ShellCliCommandFactory();
-
         private static readonly ICliCommandFactory s_directCliCommandFactory = new DirectCliCommandFactory();
 
         private readonly ICliCommandFactory _commandFactory;
@@ -25,7 +23,7 @@ namespace Atata.Cli
         public ProgramCli(string fileNameOrCommand, bool useCommandShell = false)
             : this(
                 fileNameOrCommand,
-                useCommandShell ? s_shellCliCommandFactory : s_directCliCommandFactory)
+                useCommandShell ? DefaultShellCliCommandFactory : s_directCliCommandFactory)
         {
         }
 
@@ -41,14 +39,22 @@ namespace Atata.Cli
         }
 
         /// <summary>
+        /// Gets or sets the default shell <see cref="ICliCommandFactory"/> instance.
+        /// The default value is <see cref="OSDependentShellCliCommandFactory.UseCmdForWindowsAndBashForOthers"/>.
+        /// </summary>
+        public static ICliCommandFactory DefaultShellCliCommandFactory { get; set; } =
+            OSDependentShellCliCommandFactory.UseCmdForWindowsAndBashForOthers();
+
+        /// <summary>
         /// Gets the program file name or command.
         /// </summary>
         public string FileNameOrCommand { get; }
 
         /// <summary>
-        /// Gets a value indicating whether to use command shell (cmd/bash).
+        /// Gets a value indicating whether to use command shell (cmd, bash, etc.).
         /// </summary>
-        public bool UseCommandShell { get; }
+        public bool UseCommandShell =>
+            _commandFactory is ShellCliCommandFactory;
 
         /// <summary>
         /// Gets or sets the working directory.

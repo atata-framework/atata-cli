@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Add `CmdShellCliCommandFactory` class.
+- Add `UnixShellCliCommandFactory` class.
+- Add `BashShellCliCommandFactory` class.
+- Add `OSDependentShellCliCommandFactory` class.
+- Add `public static ICliCommandFactory DefaultShellCliCommandFactory { get; set; }`
+  property to `ProgramCli`.
+
+### Changed
+
+- Improve `ShellCliCommandFactory` to be stick to a specific shell
+  and can be used as a base class for a specific shell CLI command factory.
+
 ## [1.3.0] - 2021-07-23
 
 ### Added
