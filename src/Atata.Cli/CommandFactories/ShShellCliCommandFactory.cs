@@ -1,7 +1,7 @@
 ﻿namespace Atata.Cli
 {
     /// <summary>
-    /// Represents the <see cref="CliCommand"/> factory that executes the command through the Unix Bash shell program.
+    /// Represents the <see cref="CliCommand"/> factory that executes the command through the Unix sh shell program.
     /// </summary>
     public class ShShellCliCommandFactory : UnixShellCliCommandFactory
     {
