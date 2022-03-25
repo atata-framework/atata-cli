@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   property to `ProgramCli`.
 - Add `public ICliCommandFactory CliCommandFactory { get; set; }`
   property to `ProgramCli`.
+- Add `WithCliCommandFactory(ICliCommandFactory cliCommandFactory)`
+  method to `ProgramCli` and `ProgramCli<TCli>`.
 
 ### Changed
 

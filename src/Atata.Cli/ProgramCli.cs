@@ -49,7 +49,7 @@ namespace Atata.Cli
         public string FileNameOrCommand { get; }
 
         /// <summary>
-        /// Gets or sets the command factory.
+        /// Gets or sets the CLI command factory.
         /// </summary>
         public ICliCommandFactory CliCommandFactory { get; set; }
 
@@ -90,6 +90,17 @@ namespace Atata.Cli
 
             ProcessStartInfoConfigurationActions.Add(configurationAction);
 
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the CLI command factory.
+        /// </summary>
+        /// <param name="cliCommandFactory">The CLI command factory.</param>
+        /// <returns>The same instance.</returns>
+        public ProgramCli WithCliCommandFactory(ICliCommandFactory cliCommandFactory)
+        {
+            CliCommandFactory = cliCommandFactory.CheckNotNull(nameof(cliCommandFactory));
             return this;
         }
 

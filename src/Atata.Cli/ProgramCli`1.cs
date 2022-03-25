@@ -64,6 +64,10 @@ namespace Atata.Cli
         public new TCli AddProcessStartInfoConfiguration(Action<ProcessStartInfo> configurationAction) =>
             (TCli)base.AddProcessStartInfoConfiguration(configurationAction);
 
+        /// <inheritdoc cref="ProgramCli.WithCliCommandFactory(ICliCommandFactory)"/>
+        public new TCli WithCliCommandFactory(ICliCommandFactory cliCommandFactory) =>
+            (TCli)base.WithCliCommandFactory(cliCommandFactory);
+
         /// <inheritdoc cref="ProgramCli.WithWorkingDirectory(string)"/>
         public new TCli WithWorkingDirectory(string workingDirectory) =>
             (TCli)base.WithWorkingDirectory(workingDirectory);
