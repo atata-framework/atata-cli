@@ -82,7 +82,7 @@ namespace Atata.Cli
             return factory.Create(fileNameOrCommand, arguments);
         }
 
-        private class OSPlatfromCommandFactoryItem
+        private sealed class OSPlatfromCommandFactoryItem
         {
             public OSPlatfromCommandFactoryItem(OSPlatform platform, ICliCommandFactory commandFactory)
             {

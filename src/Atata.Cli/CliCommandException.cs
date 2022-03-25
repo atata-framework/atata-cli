@@ -112,7 +112,7 @@ namespace Atata.Cli
         {
             StringBuilder messageBuilder = new StringBuilder(error);
 
-            if (!error.EndsWith("."))
+            if (!error.EndsWith(".", StringComparison.Ordinal))
                 messageBuilder.Append('.');
 
             messageBuilder
