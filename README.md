@@ -9,7 +9,7 @@
 
 **Atata.Cli** is a .NET library that provides an API for CLI.
 
-*Targets .NET Standard 2.0*
+*The package targets .NET Standard 2.0, which supports .NET 5+, .NET Framework 4.6.1+ and .NET Core/Standard 2.0+.*
 
 ## Table of Contents
 
@@ -23,7 +23,7 @@
 ## Features
 
 - Provides an abstraction over `System.Diagnostics.Process` with `CliCommand` and `ProgramCli` classes.
-- Has ability to execute CLI through command shell (cmd/bash).
+- Has ability to execute CLI through command shell: cmd, bash, sudo, etc.
 - Provides synchronous and asynchronous API methods.
 - Works on Windows, Linux and macOS.
 
@@ -65,6 +65,41 @@ new ProgramCli("dotnet")
 ```cs
 new ProgramCli("npm", useCommandShell: true)
     .Execute("install -g html-validate");
+```
+
+*The default command shell for Windows is cmd, for other OSs it is bash.*
+
+### Execute Command Through Specific Command Shell
+
+```cs
+new ProgramCli("npm", new BashShellCliCommandFactory("-login"))
+    .Execute("install -g html-validate");
+```
+
+or
+
+```cs
+new ProgramCli("npm")
+    .WithCliCommandFactory(new BashShellCliCommandFactory("-login"))
+    .Execute("install -g html-validate");
+```
+
+### Set Default Shell CLI Command Factory
+
+The default shell CLI command factory can be set in a global setup/initialization method.
+
+#### Set for Any Operating System
+
+```cs
+ProgramCli.DefaultShellCliCommandFactory = new BashShellCliCommandFactory();
+```
+
+#### Set Specific to Operating System
+
+```cs
+ProgramCli.DefaultShellCliCommandFactory = OSDependentShellCliCommandFactory
+    .UseCmdForWindows()
+    .UseForOtherOS(new BashShellCliCommandFactory("-login"));
 ```
 
 ## Feedback
