@@ -26,7 +26,7 @@ namespace Atata.Cli.IntegrationTests
         [Platform(Exclude = Platforms.Windows)]
         public void SudoShellCliCommandFactory() =>
             ExecuteDotnetVersionCommmand(new SudoShellCliCommandFactory())
-                .ValueOf(x => x.CommandText).Should.Equal("sudo -c \"dotnet --version\"");
+                .ValueOf(x => x.CommandText).Should.Equal("sudo dotnet --version");
 
         private static Subject<CliCommandResult> ExecuteDotnetVersionCommmand(ICliCommandFactory commandFactory)
         {
