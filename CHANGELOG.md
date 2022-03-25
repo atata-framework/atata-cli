@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `UnixShellCliCommandFactory` class.
 - Add `BashShellCliCommandFactory` class.
 - Add `ShShellCliCommandFactory` class.
+- Add `SudoShellCliCommandFactory` class.
 - Add `OSDependentShellCliCommandFactory` class.
 - Add `public static ICliCommandFactory DefaultShellCliCommandFactory { get; set; }`
   property to `ProgramCli`.
