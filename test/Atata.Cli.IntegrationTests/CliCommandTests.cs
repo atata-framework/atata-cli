@@ -10,13 +10,13 @@ namespace Atata.Cli.IntegrationTests
         [Test]
         public void Start_WithMissingDirectory()
         {
-            using var sut = new CliCommand("dotnet", "--version");
-            sut.StartInfo.WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString());
+            using var command = new CliCommand("dotnet", "--version");
+            command.StartInfo.WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString());
 
-            var exception = Assert.Throws<CliCommandException>(() =>
-                sut.Start());
+            var sut = command.ToSutSubject();
 
-            exception.ToSubject(nameof(exception))
+            sut.ResultOf(x => x.Start())
+                .Should.Throw<CliCommandException>()
                 .ValueOf(x => x.Message).Should.MatchAny(
                     TermMatch.StartsWith,
                     "The directory name is invalid.",
@@ -24,19 +24,18 @@ namespace Atata.Cli.IntegrationTests
                 .ValueOf(x => x.Message).Should.EndWith(
 @$"
 CLI command: dotnet --version
-Working directory: {sut.StartInfo.WorkingDirectory}")
+Working directory: {command.StartInfo.WorkingDirectory}")
                 .ValueOf(x => x.InnerException).Should.Not.BeNull();
         }
 
         [Test]
         public void Start_WithMissingFileName()
         {
-            using var sut = new CliCommand("somemissingprogram");
+            using var command = new CliCommand("somemissingprogram");
+            var sut = command.ToSutSubject();
 
-            var exception = Assert.Throws<CliCommandException>(() =>
-                sut.Start());
-
-            exception.ToSubject(nameof(exception))
+            sut.ResultOf(x => x.Start())
+                .Should.Throw<CliCommandException>()
                 .ValueOf(x => x.Message).Should.MatchAny(
                     TermMatch.StartsWith,
                     "The system cannot find the file specified.",
@@ -44,7 +43,7 @@ Working directory: {sut.StartInfo.WorkingDirectory}")
                 .ValueOf(x => x.Message).Should.EndWith(
 @$"
 CLI command: somemissingprogram
-Working directory: {sut.StartInfo.WorkingDirectory}")
+Working directory: {command.StartInfo.WorkingDirectory}")
                 .ValueOf(x => x.InnerException).Should.Not.BeNull();
         }
 

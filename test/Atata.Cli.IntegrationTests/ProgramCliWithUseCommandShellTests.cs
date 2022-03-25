@@ -47,22 +47,20 @@ namespace Atata.Cli.IntegrationTests
         [Test]
         public void Execute_WithInvalidArguments()
         {
-            var sut = new ProgramCli("dotnet", _useCommandShell);
+            var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
 
-            var exception = Assert.Throws<CliCommandException>(() =>
-                sut.Execute("--unknownflag"));
-
-            exception.ToSubject(nameof(exception))
+            sut.ResultOf(x => x.Execute("--unknownflag"))
+                .Should.Throw<CliCommandException>()
                 .ValueOf(x => x.Message).Should.Contain("dotnet --unknownflag");
         }
 
         [Test]
         public void Execute_ForMissingCli()
         {
-            var sut = new ProgramCli("somemissingprogram", _useCommandShell);
+            var sut = new ProgramCli("somemissingprogram", _useCommandShell).ToSutSubject();
 
-            Assert.Throws<CliCommandException>(() =>
-                sut.Execute());
+            sut.ResultOf(x => x.Execute(null))
+                .Should.Throw<CliCommandException>();
         }
     }
 }
