@@ -13,8 +13,6 @@ namespace Atata.Cli
     {
         private static readonly ICliCommandFactory s_directCliCommandFactory = new DirectCliCommandFactory();
 
-        private readonly ICliCommandFactory _commandFactory;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ProgramCli"/> class.
         /// </summary>
@@ -35,7 +33,7 @@ namespace Atata.Cli
         public ProgramCli(string fileNameOrCommand, ICliCommandFactory commandFactory)
         {
             FileNameOrCommand = fileNameOrCommand.CheckNotNullOrWhitespace(nameof(fileNameOrCommand));
-            _commandFactory = commandFactory.CheckNotNull(nameof(commandFactory));
+            CliCommandFactory = commandFactory.CheckNotNull(nameof(commandFactory));
         }
 
         /// <summary>
@@ -51,10 +49,15 @@ namespace Atata.Cli
         public string FileNameOrCommand { get; }
 
         /// <summary>
+        /// Gets or sets the command factory.
+        /// </summary>
+        public ICliCommandFactory CliCommandFactory { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether to use command shell (cmd, bash, etc.).
         /// </summary>
         public bool UseCommandShell =>
-            _commandFactory is ShellCliCommandFactory;
+            CliCommandFactory is ShellCliCommandFactory;
 
         /// <summary>
         /// Gets or sets the working directory.
@@ -108,7 +111,7 @@ namespace Atata.Cli
         /// <returns>The started <see cref="CliCommand"/> instance.</returns>
         public CliCommand Start(string arguments = null)
         {
-            CliCommand command = _commandFactory.Create(FileNameOrCommand, arguments);
+            CliCommand command = CliCommandFactory.Create(FileNameOrCommand, arguments);
             FillStartInfo(command.StartInfo);
 
             return command.Start();
