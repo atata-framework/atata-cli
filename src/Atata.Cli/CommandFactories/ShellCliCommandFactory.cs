@@ -4,8 +4,9 @@ using System.Runtime.InteropServices;
 namespace Atata.Cli
 {
     /// <summary>
-    /// Represents the <see cref="CliCommand"/> factory that executes the command through the specified shell program.
+    /// Represents the <see cref="CliCommand"/> base factory class that executes the command through the specified shell program.
     /// </summary>
+    // TODO: v2. Should be abstract.
     public class ShellCliCommandFactory : ICliCommandFactory
     {
         [Obsolete("Use " + nameof(OSDependentShellCliCommandFactory) + " instead.")] // Obsolete since v1.4.0.
