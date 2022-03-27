@@ -16,6 +16,7 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [CLI Command Factories](#cli-command-factories)
 - [Feedback](#feedback)
 - [SemVer](#semver)
 - [License](#license)
@@ -101,6 +102,20 @@ ProgramCli.DefaultShellCliCommandFactory = OSDependentShellCliCommandFactory
     .UseCmdForWindows()
     .UseForOtherOS(new BashShellCliCommandFactory("-login"));
 ```
+
+## CLI Command Factories
+
+There are several predefined classes that implement `ICliCommandFactory`:
+
+- `DirectCliCommandFactory` - executes the command directly. The default one.
+- `CmdShellCliCommandFactory` - executes the command through the Windows cmd shell program.
+- `BashShellCliCommandFactory` - executes the command through the Unix Bash shell program.
+- `ShShellCliCommandFactory` - executes the command through the Unix sh shell program.
+- `SudoShellCliCommandFactory` - executes the command through the Unix sudo shell program.
+- `OSDependentShellCliCommandFactory` - executes the command through one of the registered in it
+  shell `ICliCommandFactory` instances depending on the current operating system.
+- `UnixShellCliCommandFactory` - executes the command through the specified Unix shell program.
+- `ShellCliCommandFactory` - base factory class that executes the command through the specified shell program.
 
 ## Feedback
 
