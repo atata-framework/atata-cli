@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `UseCmdForWindowsAndShForOthers()` static method to `OSDependentShellCliCommandFactory`.
+
 ### Changed
 
 - Make `ShellCliCommandFactory` abstract and remove its obsolete behavior.

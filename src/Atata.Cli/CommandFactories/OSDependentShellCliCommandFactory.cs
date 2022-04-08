@@ -28,6 +28,16 @@ namespace Atata.Cli
         /// <summary>
         /// Gets the <see cref="OSDependentShellCliCommandFactory"/> instance
         /// configured to use <see cref="CmdShellCliCommandFactory"/> for Windows
+        /// and <see cref="ShShellCliCommandFactory"/> for other operating systems.
+        /// </summary>
+        /// <returns>The configured <see cref="OSDependentShellCliCommandFactory"/> instance.</returns>
+        public static OSDependentShellCliCommandFactory UseCmdForWindowsAndShForOthers() =>
+            UseCmdForWindows()
+                .UseForOtherOS(new ShShellCliCommandFactory());
+
+        /// <summary>
+        /// Gets the <see cref="OSDependentShellCliCommandFactory"/> instance
+        /// configured to use <see cref="CmdShellCliCommandFactory"/> for Windows
         /// and <see cref="BashShellCliCommandFactory"/> for other operating systems.
         /// </summary>
         /// <returns>The configured <see cref="OSDependentShellCliCommandFactory"/> instance.</returns>
