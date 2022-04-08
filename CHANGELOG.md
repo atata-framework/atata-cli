@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Make `ShellCliCommandFactory` abstract and remove its obsolete behavior.
+- Set default value of `ProgramCli.DefaultShellCliCommandFactory` to `OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()`.
 
 ## [1.4.0] - 2022-03-25
 

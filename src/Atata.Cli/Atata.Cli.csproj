@@ -9,7 +9,7 @@ The package targets .NET Standard 2.0, which supports .NET 5+, .NET Framework 4.
 
 Features:
 - Provides an abstraction over System.Diagnostics.Process with CliCommand and ProgramCli classes.
-- Has ability to execute CLI through command shell: cmd, bash, sudo, etc.
+- Has ability to execute CLI through command shell: cmd, sh, bash, sudo, etc.
 - Provides synchronous and asynchronous API methods.
 - Works on Windows, Linux and macOS.</Description>
     <RepositoryUrl>https://github.com/atata-framework/atata-cli</RepositoryUrl>

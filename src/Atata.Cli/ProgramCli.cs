@@ -38,10 +38,10 @@ namespace Atata.Cli
 
         /// <summary>
         /// Gets or sets the default shell <see cref="ICliCommandFactory"/> instance.
-        /// The default value is <see cref="OSDependentShellCliCommandFactory.UseCmdForWindowsAndBashForOthers"/>.
+        /// The default value is <see cref="OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers"/>.
         /// </summary>
         public static ICliCommandFactory DefaultShellCliCommandFactory { get; set; } =
-            OSDependentShellCliCommandFactory.UseCmdForWindowsAndBashForOthers();
+            OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers();
 
         /// <summary>
         /// Gets the program file name or command.
