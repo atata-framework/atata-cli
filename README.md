@@ -24,7 +24,7 @@
 ## Features
 
 - Provides an abstraction over `System.Diagnostics.Process` with `CliCommand` and `ProgramCli` classes.
-- Has ability to execute CLI through command shell: cmd, bash, sudo, etc.
+- Has ability to execute CLI through command shell: cmd, sh, bash, sudo, etc.
 - Provides synchronous and asynchronous API methods.
 - Works on Windows, Linux and macOS.
 
@@ -68,7 +68,7 @@ new ProgramCli("npm", useCommandShell: true)
     .Execute("install -g html-validate");
 ```
 
-*The default command shell for Windows is cmd, for other OSs it is bash.*
+*The default command shell for Windows is "cmd", for other OSs it is "sh".*
 
 ### Execute Command Through Specific Command Shell
 
