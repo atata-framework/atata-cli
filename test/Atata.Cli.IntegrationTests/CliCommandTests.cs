@@ -18,7 +18,7 @@ namespace Atata.Cli.IntegrationTests
             sut.ResultOf(x => x.Start())
                 .Should.Throw<CliCommandException>()
                 .ValueOf(x => x.Message).Should.MatchAny(
-                    TermMatch.StartsWith,
+                    TermMatch.Contains,
                     "The directory name is invalid.",
                     "No such file or directory.")
                 .ValueOf(x => x.Message).Should.EndWith(
@@ -37,7 +37,7 @@ Working directory: {command.StartInfo.WorkingDirectory}")
             sut.ResultOf(x => x.Start())
                 .Should.Throw<CliCommandException>()
                 .ValueOf(x => x.Message).Should.MatchAny(
-                    TermMatch.StartsWith,
+                    TermMatch.Contains,
                     "The system cannot find the file specified.",
                     "No such file or directory.")
                 .ValueOf(x => x.Message).Should.EndWith(
