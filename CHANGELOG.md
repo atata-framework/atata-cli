@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2022-07-21
+
+### Added
+
+- Add `CliCommandResultValidationRules` enumeration with the flag values: `None`, `ZeroExitCode`, `NoError`, `ZeroExitCodeAndNoError`.
+- Add `public CliCommandResultValidationRules ResultValidationRules { get; set; } = CliCommandResultValidationRules.ZeroExitCode` property to `ProgramCli`.
+
+### Changed
+
+- Change default `CliCommandResult` validation in `Execute` and `ExecuteAsync` methods to check `ExitCode == 0` instead of `HasError == false`.
+- Add exit code to `CliCommandException` message.
+
 ## [2.0.0] - 2022-05-10
 
 ### Added

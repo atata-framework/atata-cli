@@ -61,6 +61,7 @@ namespace Atata.Cli
                 null,
                 error,
                 output,
+                null,
                 innerException);
 
         internal static CliCommandException CreateForAlreadyStartedCommand(string commandText, string workingDirectory) =>
@@ -68,6 +69,7 @@ namespace Atata.Cli
                 commandText,
                 workingDirectory,
                 "The command has already been started.",
+                null,
                 null,
                 null);
 
@@ -77,6 +79,7 @@ namespace Atata.Cli
                 workingDirectory,
                 "The command was not started.",
                 null,
+                null,
                 null);
 
         internal static CliCommandException CreateForTimeout(string commandText, string workingDirectory) =>
@@ -84,6 +87,7 @@ namespace Atata.Cli
                 commandText,
                 workingDirectory,
                 "Timed out waiting for command to execute.",
+                null,
                 null,
                 null);
 
@@ -93,6 +97,7 @@ namespace Atata.Cli
                 result.WorkingDirectory,
                 result.Error,
                 result.Output,
+                result.ExitCode,
                 null);
 
         internal static CliCommandException CreateForProcessStartException(string commandText, string workingDirectory, Exception innerException) =>
@@ -101,6 +106,7 @@ namespace Atata.Cli
                 workingDirectory,
                 innerException.Message,
                 null,
+                null,
                 innerException);
 
         private static CliCommandException Create(
@@ -108,6 +114,7 @@ namespace Atata.Cli
             string workingDirectory,
             string error,
             string output,
+            int? exitCode,
             Exception innerException)
         {
             StringBuilder messageBuilder = new StringBuilder(error);
@@ -126,6 +133,12 @@ namespace Atata.Cli
                     .AppendLine()
                     .Append("Working directory: ")
                     .Append(workingDirectory);
+
+            if (exitCode != null)
+                messageBuilder
+                    .AppendLine()
+                    .Append("Exit code: ")
+                    .Append(exitCode);
 
             if (!string.IsNullOrWhiteSpace(output))
                 messageBuilder

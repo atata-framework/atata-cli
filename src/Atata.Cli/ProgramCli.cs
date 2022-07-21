@@ -80,6 +80,14 @@ namespace Atata.Cli
         public List<Action<ProcessStartInfo>> ProcessStartInfoConfigurationActions { get; } = new List<Action<ProcessStartInfo>>();
 
         /// <summary>
+        /// Gets or sets the command result validation rules that are performed in
+        /// <see cref="Execute(string)"/> and <see cref="ExecuteAsync(string)"/>
+        /// methods and produce <see cref="CliCommandException"/> throwing.
+        /// The default value is <see cref="CliCommandResultValidationRules.ZeroExitCode"/>.
+        /// </summary>
+        public CliCommandResultValidationRules ResultValidationRules { get; set; } = CliCommandResultValidationRules.ZeroExitCode;
+
+        /// <summary>
         /// Adds the process <see cref="Process.StartInfo"/> configuration.
         /// </summary>
         /// <param name="configurationAction">The configuration action.</param>
@@ -144,18 +152,23 @@ namespace Atata.Cli
 
         /// <summary>
         /// Starts the program with the specified arguments and waits until it exits.
-        /// Throws <see cref="CliCommandException"/> if program result has an error.
+        /// Throws <see cref="CliCommandException"/> if program result doesn't meet validation rules
+        /// of <see cref="ResultValidationRules"/> property.
         /// </summary>
         /// <param name="arguments">The arguments.</param>
         /// <returns>The <see cref="CliCommandResult"/> instance.</returns>
         public CliCommandResult Execute(string arguments = null)
         {
             CliCommandResult result = ExecuteRaw(arguments);
+            ValidateResult(result);
+            return result;
+        }
 
-            if (result.HasError)
+        private void ValidateResult(CliCommandResult result)
+        {
+            if ((ResultValidationRules.HasFlag(CliCommandResultValidationRules.ZeroExitCode) && result.ExitCode != 0)
+                || (ResultValidationRules.HasFlag(CliCommandResultValidationRules.NoError) && result.HasError))
                 throw CliCommandException.CreateForErrorResult(result);
-            else
-                return result;
         }
 
         /// <inheritdoc cref="Execute(string)"/>
