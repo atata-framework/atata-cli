@@ -75,7 +75,7 @@ Working directory: {command.StartInfo.WorkingDirectory}")
         }
 
         [TestCase(true, ExcludePlatform = Platforms.MacOS)]
-        [TestCase(false)]
+        [TestCase(false, ExcludePlatform = Platforms.MacOS)]
         public void Kill(bool entireProcessTree)
         {
             using var sut = new CliCommand("dotnet", "help");
