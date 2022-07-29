@@ -74,14 +74,15 @@ Working directory: {command.StartInfo.WorkingDirectory}")
                 .ValueOf(x => x.Error).Should.BeEmpty();
         }
 
-        [Test]
-        public void Kill()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Kill(bool entireProcessTree)
         {
             using var sut = new CliCommand("dotnet", "help");
 
             sut.ToSutSubject()
                 .Act(x => x.Start())
-                .ResultOf(x => x.Kill())
+                .ResultOf(x => x.Kill(entireProcessTree))
 
                 .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
                 .ValueOf(x => x.Output).Should.BeEmpty()

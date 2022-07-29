@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 
@@ -12,6 +13,9 @@ namespace Atata.Cli
     /// </summary>
     public class CliCommand : IDisposable
     {
+        private static readonly Lazy<MethodInfo> s_lazyProcessKillMethodWithBoolParameter = new Lazy<MethodInfo>(
+            () => typeof(Process).GetMethod(nameof(Process.Kill), new[] { typeof(bool) }));
+
         private readonly Process _process;
 
         private readonly StringBuilder _outputStringBuilder = new StringBuilder();
@@ -156,11 +160,26 @@ namespace Atata.Cli
 
         /// <summary>
         /// Immediately stops the associated process.
+        /// After killing the process, disposes the <see cref="CliCommand"/> instance.
         /// </summary>
         /// <returns>The command result.</returns>
         /// <exception cref="ObjectDisposedException">Cannot access a disposed object.</exception>
         /// <exception cref="CliCommandException">The command was not started.</exception>
-        public CliCommandResult Kill()
+        public CliCommandResult Kill() =>
+            Kill(false);
+
+        /// <summary>
+        /// Immediately stops the associated process, and optionally its child/descendent processes.
+        /// After killing the process, disposes the <see cref="CliCommand"/> instance.
+        /// </summary>
+        /// <param name="entireProcessTree">
+        /// <see langword="true"/> to kill the associated process and its descendants;
+        /// <see langword="false"/> to kill only the associated process.
+        /// </param>
+        /// <returns>The command result.</returns>
+        /// <exception cref="ObjectDisposedException">Cannot access a disposed object.</exception>
+        /// <exception cref="CliCommandException">The command was not started.</exception>
+        public CliCommandResult Kill(bool entireProcessTree)
         {
             EnsureIsNotDisposed();
 
@@ -169,7 +188,11 @@ namespace Atata.Cli
 
             try
             {
-                _process.Kill();
+                if (entireProcessTree)
+                    KillEntireProcessTree();
+                else
+                    _process.Kill();
+
                 _exitResetEvent.Wait();
                 return _result;
             }
@@ -177,6 +200,16 @@ namespace Atata.Cli
             {
                 Dispose();
             }
+        }
+
+        private void KillEntireProcessTree()
+        {
+            var killMethod = s_lazyProcessKillMethodWithBoolParameter.Value;
+
+            if (killMethod is null)
+                throw new MissingMethodException(nameof(Process), $"{nameof(Process.Kill)}(bool)");
+            else
+                killMethod.Invoke(_process, new object[] { true });
         }
 
         private void OnProcessOutputDataReceived(object sender, DataReceivedEventArgs e)
