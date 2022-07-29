@@ -61,6 +61,11 @@ namespace Atata.Cli
         }
 
         /// <summary>
+        /// Gets the process.
+        /// </summary>
+        public Process Process => _process;
+
+        /// <summary>
         /// Gets the process <see cref="ProcessStartInfo"/> instance that can be configured.
         /// </summary>
         public ProcessStartInfo StartInfo => _process.StartInfo;

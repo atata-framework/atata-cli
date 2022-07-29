@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `CliCommand.Kill(bool entireProcessTree)` method.
+- Add `CliCommand.Process` property.
 
 ## [2.1.0] - 2022-07-21
 
