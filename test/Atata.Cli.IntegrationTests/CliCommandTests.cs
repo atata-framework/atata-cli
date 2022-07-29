@@ -74,7 +74,7 @@ Working directory: {command.StartInfo.WorkingDirectory}")
                 .ValueOf(x => x.Error).Should.BeEmpty();
         }
 
-        [TestCase(true)]
+        [TestCase(true, ExcludePlatform = Platforms.MacOS)]
         [TestCase(false)]
         public void Kill(bool entireProcessTree)
         {
