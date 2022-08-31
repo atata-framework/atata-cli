@@ -22,9 +22,11 @@ public class CliCommandTests
                 "The directory name is invalid.",
                 "No such file or directory.")
             .ValueOf(x => x.Message).Should.EndWith(
-@$"
-CLI command: dotnet --version
-Working directory: {command.StartInfo.WorkingDirectory}")
+                string.Join(
+                    Environment.NewLine,
+                    string.Empty,
+                    "CLI command: dotnet --version",
+                    $"Working directory: {command.StartInfo.WorkingDirectory}"))
             .ValueOf(x => x.InnerException).Should.Not.BeNull();
     }
 
@@ -41,9 +43,11 @@ Working directory: {command.StartInfo.WorkingDirectory}")
                 "The system cannot find the file specified.",
                 "No such file or directory.")
             .ValueOf(x => x.Message).Should.EndWith(
-@$"
-CLI command: somemissingprogram
-Working directory: {command.StartInfo.WorkingDirectory}")
+                string.Join(
+                    Environment.NewLine,
+                    string.Empty,
+                    "CLI command: somemissingprogram",
+                    $"Working directory: {command.StartInfo.WorkingDirectory}"))
             .ValueOf(x => x.InnerException).Should.Not.BeNull();
     }
 
