@@ -3,64 +3,61 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace Atata.Cli.IntegrationTests
+namespace Atata.Cli.IntegrationTests;
+
+[TestFixture(true)]
+[TestFixture(false)]
+public class ProgramCliWithUseCommandShellTests
 {
-    [TestFixture(true)]
-    [TestFixture(false)]
-    public class ProgramCliWithUseCommandShellTests
+    private readonly bool _useCommandShell;
+
+    public ProgramCliWithUseCommandShellTests(bool useCommandShell) =>
+        _useCommandShell = useCommandShell;
+
+    [Test]
+    public void Execute_WithValidArguments()
     {
-        private readonly bool _useCommandShell;
+        var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
 
-        public ProgramCliWithUseCommandShellTests(bool useCommandShell)
+        sut.ResultOf(x => x.Execute("--version"))
+            .ValueOf(x => x.ExitCode).Should.Equal(0)
+            .ValueOf(x => x.Output).Should.Contain(".")
+            .ValueOf(x => x.Error).Should.BeEmpty();
+    }
+
+    [Test]
+    public void Execute_WithStringArgument()
+    {
+        var sut = new ProgramCli("dotnet", _useCommandShell)
         {
-            _useCommandShell = useCommandShell;
-        }
+            WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../")
+        }.ToSutSubject();
 
-        [Test]
-        public void Execute_WithValidArguments()
-        {
-            var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
+        string projectName = Assembly.GetAssembly(GetType()).GetName().Name;
+        string arguments = $"restore \"{projectName}.csproj\"";
 
-            sut.ResultOf(x => x.Execute("--version"))
-                .ValueOf(x => x.ExitCode).Should.Equal(0)
-                .ValueOf(x => x.Output).Should.Contain(".")
-                .ValueOf(x => x.Error).Should.BeEmpty();
-        }
+        sut.ResultOf(x => x.Execute(arguments))
+            .ValueOf(x => x.ExitCode).Should.Equal(0)
+            .ValueOf(x => x.Output).Should.Contain("restore...")
+            .ValueOf(x => x.Error).Should.BeEmpty();
+    }
 
-        [Test]
-        public void Execute_WithStringArgument()
-        {
-            var sut = new ProgramCli("dotnet", _useCommandShell)
-            {
-                WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../")
-            }.ToSutSubject();
+    [Test]
+    public void Execute_WithInvalidArguments()
+    {
+        var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
 
-            string projectName = Assembly.GetAssembly(GetType()).GetName().Name;
-            string arguments = $"restore \"{projectName}.csproj\"";
+        sut.ResultOf(x => x.Execute("--unknownflag"))
+            .Should.Throw<CliCommandException>()
+            .ValueOf(x => x.Message).Should.Contain("dotnet --unknownflag");
+    }
 
-            sut.ResultOf(x => x.Execute(arguments))
-                .ValueOf(x => x.ExitCode).Should.Equal(0)
-                .ValueOf(x => x.Output).Should.Contain("restore...")
-                .ValueOf(x => x.Error).Should.BeEmpty();
-        }
+    [Test]
+    public void Execute_ForMissingCli()
+    {
+        var sut = new ProgramCli("somemissingprogram", _useCommandShell).ToSutSubject();
 
-        [Test]
-        public void Execute_WithInvalidArguments()
-        {
-            var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
-
-            sut.ResultOf(x => x.Execute("--unknownflag"))
-                .Should.Throw<CliCommandException>()
-                .ValueOf(x => x.Message).Should.Contain("dotnet --unknownflag");
-        }
-
-        [Test]
-        public void Execute_ForMissingCli()
-        {
-            var sut = new ProgramCli("somemissingprogram", _useCommandShell).ToSutSubject();
-
-            sut.ResultOf(x => x.Execute(null))
-                .Should.Throw<CliCommandException>();
-        }
+        sut.ResultOf(x => x.Execute(null))
+            .Should.Throw<CliCommandException>();
     }
 }

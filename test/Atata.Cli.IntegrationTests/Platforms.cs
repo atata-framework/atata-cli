@@ -1,11 +1,10 @@
-﻿namespace Atata.Cli.IntegrationTests
+﻿namespace Atata.Cli.IntegrationTests;
+
+public static class Platforms
 {
-    public static class Platforms
-    {
-        public const string Windows = "Win";
+    public const string Windows = "Win";
 
-        public const string Linux = "Linux";
+    public const string Linux = "Linux";
 
-        public const string MacOS = "MacOsX";
-    }
+    public const string MacOS = "MacOsX";
 }
