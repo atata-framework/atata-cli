@@ -101,14 +101,12 @@ namespace Atata
 
         private static ArgumentNullException CreateArgumentNullException(string argumentName, string message) =>
             message is null
-            ? new ArgumentNullException(argumentName)
-            : new ArgumentNullException(argumentName, message);
+                ? new ArgumentNullException(argumentName)
+                : new ArgumentNullException(argumentName, message);
 
-        private static string ConcatMessage(string primaryMessage, string secondaryMessage)
-        {
-            return string.IsNullOrEmpty(secondaryMessage)
+        private static string ConcatMessage(string primaryMessage, string secondaryMessage) =>
+            string.IsNullOrEmpty(secondaryMessage)
                 ? primaryMessage
                 : $"{primaryMessage} {secondaryMessage}";
-        }
     }
 }
