@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Atata.Cli
@@ -12,7 +11,7 @@ namespace Atata.Cli
     /// </summary>
     public class OSDependentShellCliCommandFactory : ICliCommandFactory
     {
-        private readonly List<OSPlatfromCommandFactoryItem> _osPlatformCommandFactoryMap = new List<OSPlatfromCommandFactoryItem>();
+        private readonly List<OSPlatformCommandFactoryItem> _osPlatformCommandFactoryMap = new List<OSPlatformCommandFactoryItem>();
 
         private ICliCommandFactory _otherOSCommandFactory;
 
@@ -66,7 +65,7 @@ namespace Atata.Cli
             commandFactory.CheckNotNull(nameof(commandFactory));
 
             _osPlatformCommandFactoryMap.RemoveAll(x => x.Platform == osPlatform);
-            _osPlatformCommandFactoryMap.Add(new OSPlatfromCommandFactoryItem(osPlatform, commandFactory));
+            _osPlatformCommandFactoryMap.Add(new OSPlatformCommandFactoryItem(osPlatform, commandFactory));
 
             return this;
         }
@@ -85,16 +84,16 @@ namespace Atata.Cli
         /// <inheritdoc/>
         public CliCommand Create(string fileNameOrCommand, string arguments)
         {
-            ICliCommandFactory factory = _osPlatformCommandFactoryMap.FirstOrDefault(x => x.IsMatchCurrentOS())
+            ICliCommandFactory factory = _osPlatformCommandFactoryMap.Find(x => x.IsMatchCurrentOS())
                 ?.CommandFactory ?? _otherOSCommandFactory
                 ?? throw new InvalidOperationException($"Failed to find {nameof(ICliCommandFactory)} matching the current operating system.");
 
             return factory.Create(fileNameOrCommand, arguments);
         }
 
-        private sealed class OSPlatfromCommandFactoryItem
+        private sealed class OSPlatformCommandFactoryItem
         {
-            public OSPlatfromCommandFactoryItem(OSPlatform platform, ICliCommandFactory commandFactory)
+            public OSPlatformCommandFactoryItem(OSPlatform platform, ICliCommandFactory commandFactory)
             {
                 Platform = platform;
                 CommandFactory = commandFactory;
