@@ -182,10 +182,9 @@ namespace Atata.Cli
         /// <returns>The <see cref="CliCommandResult"/> instance.</returns>
         public CliCommandResult ExecuteRaw(string arguments = null)
         {
-            using (var command = Start(arguments))
-            {
-                return command.WaitForExit(WaitForExitTimeout);
-            }
+            using var command = Start(arguments);
+
+            return command.WaitForExit(WaitForExitTimeout);
         }
 
         /// <inheritdoc cref="ExecuteRaw(string)"/>

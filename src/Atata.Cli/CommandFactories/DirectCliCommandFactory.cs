@@ -7,6 +7,6 @@
     {
         /// <inheritdoc/>
         public CliCommand Create(string fileNameOrCommand, string arguments) =>
-            new CliCommand(fileNameOrCommand, arguments);
+            new(fileNameOrCommand, arguments);
     }
 }

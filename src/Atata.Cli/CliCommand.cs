@@ -13,20 +13,20 @@ namespace Atata.Cli
     /// </summary>
     public class CliCommand : IDisposable
     {
-        private static readonly Lazy<MethodInfo> s_lazyProcessKillMethodWithBoolParameter = new Lazy<MethodInfo>(
+        private static readonly Lazy<MethodInfo> s_lazyProcessKillMethodWithBoolParameter = new(
             () => typeof(Process).GetMethod(nameof(Process.Kill), new[] { typeof(bool) }));
 
         private readonly Process _process;
 
-        private readonly StringBuilder _outputStringBuilder = new StringBuilder();
+        private readonly StringBuilder _outputStringBuilder = new();
 
-        private readonly StringBuilder _errorStringBuilder = new StringBuilder();
+        private readonly StringBuilder _errorStringBuilder = new();
 
-        private readonly ManualResetEventSlim _outputResetEvent = new ManualResetEventSlim();
+        private readonly ManualResetEventSlim _outputResetEvent = new();
 
-        private readonly ManualResetEventSlim _errorResetEvent = new ManualResetEventSlim();
+        private readonly ManualResetEventSlim _errorResetEvent = new();
 
-        private readonly ManualResetEventSlim _exitResetEvent = new ManualResetEventSlim();
+        private readonly ManualResetEventSlim _exitResetEvent = new();
 
         private CliCommandResult _result;
 

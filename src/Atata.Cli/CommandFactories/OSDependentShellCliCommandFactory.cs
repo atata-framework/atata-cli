@@ -11,7 +11,7 @@ namespace Atata.Cli
     /// </summary>
     public class OSDependentShellCliCommandFactory : ICliCommandFactory
     {
-        private readonly List<OSPlatformCommandFactoryItem> _osPlatformCommandFactoryMap = new List<OSPlatformCommandFactoryItem>();
+        private readonly List<OSPlatformCommandFactoryItem> _osPlatformCommandFactoryMap = new();
 
         private ICliCommandFactory _otherOSCommandFactory;
 

@@ -37,7 +37,7 @@ namespace Atata.Cli
         /// </summary>
         /// <returns>The created <typeparamref name="TCli"/> instance.</returns>
         public static TCli InBaseDirectory() =>
-            new TCli
+            new()
             {
                 WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
             };
