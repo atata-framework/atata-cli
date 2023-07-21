@@ -1,12 +1,11 @@
-﻿namespace Atata.Cli
+﻿namespace Atata.Cli;
+
+/// <summary>
+/// Represents the direct <see cref="CliCommand"/> factory.
+/// </summary>
+public class DirectCliCommandFactory : ICliCommandFactory
 {
-    /// <summary>
-    /// Represents the direct <see cref="CliCommand"/> factory.
-    /// </summary>
-    public class DirectCliCommandFactory : ICliCommandFactory
-    {
-        /// <inheritdoc/>
-        public CliCommand Create(string fileNameOrCommand, string arguments) =>
-            new(fileNameOrCommand, arguments);
-    }
+    /// <inheritdoc/>
+    public CliCommand Create(string fileNameOrCommand, string arguments) =>
+        new(fileNameOrCommand, arguments);
 }
