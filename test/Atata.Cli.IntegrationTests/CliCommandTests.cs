@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using NUnit.Framework;
-
-namespace Atata.Cli.IntegrationTests;
+﻿namespace Atata.Cli.IntegrationTests;
 
 [TestFixture]
 public class CliCommandTests

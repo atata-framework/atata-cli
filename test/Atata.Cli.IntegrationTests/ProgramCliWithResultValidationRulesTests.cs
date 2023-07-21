@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Atata.Cli.IntegrationTests;
+﻿namespace Atata.Cli.IntegrationTests;
 
 public class ProgramCliWithResultValidationRulesTests
 {
