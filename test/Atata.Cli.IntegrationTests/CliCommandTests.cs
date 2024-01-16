@@ -74,11 +74,12 @@ public class CliCommandTests
             .ValueOf(x => x.Error).Should.BeEmpty();
     }
 
-    [TestCase(true, ExcludePlatform = Platforms.MacOS)]
-    [TestCase(false, ExcludePlatform = Platforms.MacOS)]
+    [TestCase(true)]
+    [TestCase(false)]
     public void Kill(bool entireProcessTree)
     {
-        using var sut = new CliCommand("dotnet", "help");
+        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+            .Create("sleep 5", null);
 
         sut.ToSutSubject()
             .Act(x => x.Start())
