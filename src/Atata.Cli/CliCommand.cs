@@ -8,7 +8,7 @@
 public class CliCommand : IDisposable
 {
     private static readonly Lazy<MethodInfo> s_lazyProcessKillMethodWithBoolParameter = new(
-        () => typeof(Process).GetMethod(nameof(Process.Kill), new[] { typeof(bool) }));
+        () => typeof(Process).GetMethod(nameof(Process.Kill), [typeof(bool)]));
 
     private readonly Process _process;
 
@@ -208,7 +208,7 @@ public class CliCommand : IDisposable
         if (killMethod is null)
             throw new MissingMethodException(nameof(Process), $"{nameof(Process.Kill)}(bool)");
         else
-            killMethod.Invoke(_process, new object[] { true });
+            killMethod.Invoke(_process, [true]);
     }
 
     private void OnProcessOutputDataReceived(object sender, DataReceivedEventArgs e)

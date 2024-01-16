@@ -71,7 +71,7 @@ public class ProgramCli
     /// <summary>
     /// Gets the list of configuration actions of process <see cref="Process.StartInfo"/>.
     /// </summary>
-    public List<Action<ProcessStartInfo>> ProcessStartInfoConfigurationActions { get; } = new List<Action<ProcessStartInfo>>();
+    public List<Action<ProcessStartInfo>> ProcessStartInfoConfigurationActions { get; } = [];
 
     /// <summary>
     /// Gets or sets the command result validation rules that are performed in
