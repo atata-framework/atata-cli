@@ -44,6 +44,8 @@ jobs:
       arguments: -c $(buildConfiguration) -p:RunCodeAnalysis=false
   - script: npm install -g html-validate
     displayName: Install html-validate NPM package
+  - script: html-validate "test/Atata.Cli.IntegrationTests/reddit-frontpage.html" --f json
+    displayName: Run html-validate
   - task: DotNetCoreCLI@2
     displayName: Run integration tests
     timeoutInMinutes: 5
@@ -65,6 +67,8 @@ jobs:
       arguments: -c $(buildConfiguration) -p:RunCodeAnalysis=false
   - script: sudo npm install -g html-validate
     displayName: Install html-validate NPM package
+  - script: html-validate "test/Atata.Cli.IntegrationTests/reddit-frontpage.html" --f json
+    displayName: Run html-validate
   - task: DotNetCoreCLI@2
     displayName: Run integration tests
     timeoutInMinutes: 5
