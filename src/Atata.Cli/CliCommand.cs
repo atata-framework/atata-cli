@@ -213,6 +213,8 @@ public class CliCommand : IDisposable
 
     private void OnProcessOutputDataReceived(object sender, DataReceivedEventArgs e)
     {
+        Console.WriteLine($"OnProcessOutputDataReceived: {e.Data?.Length}");
+
         if (e.Data == null)
         {
             _outputResetEvent.Set();
@@ -223,6 +225,7 @@ public class CliCommand : IDisposable
                 _outputStringBuilder.AppendLine();
 
             _outputStringBuilder.Append(e.Data);
+            Console.WriteLine($"_outputStringBuilder.Length: {_outputStringBuilder.Length}");
         }
     }
 
