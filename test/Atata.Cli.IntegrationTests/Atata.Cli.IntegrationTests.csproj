@@ -16,4 +16,10 @@
     <ProjectReference Include="..\..\src\Atata.Cli\Atata.Cli.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="reddit-frontpage.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
