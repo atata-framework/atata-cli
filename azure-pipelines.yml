@@ -23,8 +23,8 @@ jobs:
   displayName: Run tests on
   strategy:
     matrix:
-      Linux:
-        imageName: 'ubuntu-latest'
+      # Linux:
+      #   imageName: 'ubuntu-latest'
       macOS:
         imageName: 'macOS-latest'
       Windows:
@@ -42,6 +42,29 @@ jobs:
       command: build
       projects: '*.sln'
       arguments: -c $(buildConfiguration) -p:RunCodeAnalysis=false
+  - script: npm install -g html-validate
+    displayName: Install html-validate NPM package
+  - task: DotNetCoreCLI@2
+    displayName: Run integration tests
+    timeoutInMinutes: 5
+    inputs:
+      command: test
+      projects: 'test/*/*IntegrationTests.csproj'
+      arguments: -c $(buildConfiguration) -s "azure-pipelines.runsettings" --no-build
+
+- job: RunTestsOnLinux
+  displayName: Run tests on Linux
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - task: DotNetCoreCLI@2
+    displayName: Build solution
+    inputs:
+      command: build
+      projects: '*.sln'
+      arguments: -c $(buildConfiguration) -p:RunCodeAnalysis=false
+  - script: sudo npm install -g html-validate
+    displayName: Install html-validate NPM package
   - task: DotNetCoreCLI@2
     displayName: Run integration tests
     timeoutInMinutes: 5
