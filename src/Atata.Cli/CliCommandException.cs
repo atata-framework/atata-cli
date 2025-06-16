@@ -1,9 +1,8 @@
 ﻿namespace Atata.Cli;
 
 /// <summary>
-/// Represents the error that occurred during CLI command execution.
+/// An exception that occurs during CLI command execution.
 /// </summary>
-[Serializable]
 public class CliCommandException : Exception
 {
     /// <summary>
@@ -17,7 +16,7 @@ public class CliCommandException : Exception
     /// Initializes a new instance of the <see cref="CliCommandException"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    public CliCommandException(string message)
+    public CliCommandException(string? message)
         : base(message)
     {
     }
@@ -27,18 +26,8 @@ public class CliCommandException : Exception
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
     /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
-    public CliCommandException(string message, Exception innerException)
+    public CliCommandException(string? message, Exception? innerException)
         : base(message, innerException)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CliCommandException"/> class.
-    /// </summary>
-    /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-    /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
-    protected CliCommandException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
     {
     }
 
@@ -51,7 +40,7 @@ public class CliCommandException : Exception
     /// <param name="innerException">The inner exception.</param>
     /// <returns>The <see cref="CliCommandException"/> instance.</returns>
     [Obsolete("Use constructor instead.")] // Obsolete since v1.3.0.
-    public static CliCommandException Create(string commandText, string error, string output = null, Exception innerException = null) =>
+    public static CliCommandException Create(string commandText, string error, string? output = null, Exception? innerException = null) =>
         Create(
             commandText,
             null,
@@ -107,13 +96,13 @@ public class CliCommandException : Exception
 
     private static CliCommandException Create(
         string commandText,
-        string workingDirectory,
+        string? workingDirectory,
         string error,
-        string output,
+        string? output,
         int? exitCode,
-        Exception innerException)
+        Exception? innerException)
     {
-        StringBuilder messageBuilder = new StringBuilder(error);
+        StringBuilder messageBuilder = new(error);
 
         if (!error.EndsWith(".", StringComparison.Ordinal))
             messageBuilder.Append('.');

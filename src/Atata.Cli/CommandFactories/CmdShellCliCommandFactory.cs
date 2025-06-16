@@ -9,12 +9,12 @@ public class CmdShellCliCommandFactory : ShellCliCommandFactory
     /// Initializes a new instance of the <see cref="CmdShellCliCommandFactory"/> class.
     /// </summary>
     /// <param name="shellArguments">The shell arguments.</param>
-    public CmdShellCliCommandFactory(string shellArguments = null)
+    public CmdShellCliCommandFactory(string? shellArguments = null)
         : base("cmd", shellArguments)
     {
     }
 
     /// <inheritdoc/>
-    protected override string BuildShellCommandArgument(string command, string commandArguments) =>
+    protected override string BuildShellCommandArgument(string command, string? commandArguments) =>
         $"/c {command} {commandArguments}";
 }

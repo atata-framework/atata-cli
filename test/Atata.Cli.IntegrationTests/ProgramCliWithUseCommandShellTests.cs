@@ -28,7 +28,7 @@ public class ProgramCliWithUseCommandShellTests
             WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../")
         }.ToSutSubject();
 
-        string projectName = Assembly.GetAssembly(GetType()).GetName().Name;
+        string projectName = Assembly.GetAssembly(GetType())!.GetName().Name!;
         string arguments = $"restore \"{projectName}.csproj\"";
 
         sut.ResultOf(x => x.Execute(arguments))

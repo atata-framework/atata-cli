@@ -9,7 +9,7 @@ public class ShShellCliCommandFactory : UnixShellCliCommandFactory
     /// Initializes a new instance of the <see cref="ShShellCliCommandFactory"/> class.
     /// </summary>
     /// <param name="shellArguments">The shell arguments.</param>
-    public ShShellCliCommandFactory(string shellArguments = null)
+    public ShShellCliCommandFactory(string? shellArguments = null)
         : base("sh", shellArguments)
     {
     }

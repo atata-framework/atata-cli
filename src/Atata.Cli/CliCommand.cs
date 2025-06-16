@@ -22,7 +22,7 @@ public class CliCommand : IDisposable
 
     private readonly ManualResetEventSlim _exitResetEvent = new();
 
-    private CliCommandResult _result;
+    private CliCommandResult? _result;
 
     private bool _isStarted;
 
@@ -33,7 +33,7 @@ public class CliCommand : IDisposable
     /// </summary>
     /// <param name="fileName">Name of the file.</param>
     /// <param name="arguments">The arguments.</param>
-    public CliCommand(string fileName, string arguments = null)
+    public CliCommand(string fileName, string? arguments = null)
     {
         _process = new Process
         {
@@ -147,7 +147,7 @@ public class CliCommand : IDisposable
         try
         {
             if (_process.WaitForExit(timeoutMilliseconds) && _exitResetEvent.Wait(timeoutMilliseconds))
-                return _result;
+                return _result!;
             else
                 throw CliCommandException.CreateForTimeout(CommandText, StartInfo.WorkingDirectory);
         }
@@ -193,7 +193,7 @@ public class CliCommand : IDisposable
                 _process.Kill();
 
             _exitResetEvent.Wait();
-            return _result;
+            return _result!;
         }
         finally
         {
@@ -252,14 +252,12 @@ public class CliCommand : IDisposable
     }
 
     private void CollectResult() =>
-        _result = new CliCommandResult
-        {
-            CommandText = CommandText,
-            WorkingDirectory = StartInfo.WorkingDirectory,
-            ExitCode = _process.ExitCode,
-            Output = _outputStringBuilder.ToString(),
-            Error = _errorStringBuilder.ToString()
-        };
+        _result = new CliCommandResult(
+            CommandText,
+            StartInfo.WorkingDirectory,
+            _process.ExitCode,
+            _outputStringBuilder.ToString(),
+            _errorStringBuilder.ToString());
 
     private void EnsureIsNotDisposed()
     {

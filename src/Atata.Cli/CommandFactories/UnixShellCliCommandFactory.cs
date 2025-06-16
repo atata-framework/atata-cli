@@ -10,7 +10,7 @@ public class UnixShellCliCommandFactory : ShellCliCommandFactory
     /// </summary>
     /// <param name="shellFileName">Name of the shell file.</param>
     /// <param name="shellArguments">The shell arguments.</param>
-    public UnixShellCliCommandFactory(string shellFileName, string shellArguments = null)
+    public UnixShellCliCommandFactory(string shellFileName, string? shellArguments = null)
         : base(shellFileName, shellArguments)
     {
     }
@@ -24,9 +24,9 @@ public class UnixShellCliCommandFactory : ShellCliCommandFactory
         value.Replace("\"", "\\\"");
 
     /// <inheritdoc/>
-    protected override string BuildShellCommandArgument(string command, string commandArguments)
+    protected override string BuildShellCommandArgument(string command, string? commandArguments)
     {
-        string escapedCommandArguments = commandArguments != null
+        string escapedCommandArguments = commandArguments?.Length > 0
             ? EscapeCommandArguments(commandArguments)
             : string.Empty;
 

@@ -9,7 +9,7 @@ public class BashShellCliCommandFactory : UnixShellCliCommandFactory
     /// Initializes a new instance of the <see cref="BashShellCliCommandFactory"/> class.
     /// </summary>
     /// <param name="shellArguments">The shell arguments.</param>
-    public BashShellCliCommandFactory(string shellArguments = null)
+    public BashShellCliCommandFactory(string? shellArguments = null)
         : base("bash", shellArguments)
     {
     }

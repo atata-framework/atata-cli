@@ -6,6 +6,6 @@
 public class DirectCliCommandFactory : ICliCommandFactory
 {
     /// <inheritdoc/>
-    public CliCommand Create(string fileNameOrCommand, string arguments) =>
+    public CliCommand Create(string fileNameOrCommand, string? arguments) =>
         new(fileNameOrCommand, arguments);
 }

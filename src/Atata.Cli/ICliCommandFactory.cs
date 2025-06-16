@@ -11,5 +11,5 @@ public interface ICliCommandFactory
     /// <param name="fileNameOrCommand">The file name or command.</param>
     /// <param name="arguments">The arguments.</param>
     /// <returns>The created <see cref="CliCommand"/> instance.</returns>
-    CliCommand Create(string fileNameOrCommand, string arguments);
+    CliCommand Create(string fileNameOrCommand, string? arguments);
 }

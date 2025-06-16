@@ -10,9 +10,11 @@ public abstract class ShellCliCommandFactory : ICliCommandFactory
     /// </summary>
     /// <param name="shellFileName">Name of the shell file.</param>
     /// <param name="shellArguments">The shell arguments.</param>
-    protected ShellCliCommandFactory(string shellFileName, string shellArguments = null)
+    protected ShellCliCommandFactory(string shellFileName, string? shellArguments = null)
     {
-        ShellFileName = shellFileName.CheckNotNullOrWhitespace(nameof(shellFileName));
+        Guard.ThrowIfNullOrWhitespace(shellFileName);
+
+        ShellFileName = shellFileName;
         ShellArguments = shellArguments;
     }
 
@@ -24,10 +26,10 @@ public abstract class ShellCliCommandFactory : ICliCommandFactory
     /// <summary>
     /// Gets the shell arguments.
     /// </summary>
-    public string ShellArguments { get; }
+    public string? ShellArguments { get; }
 
     /// <inheritdoc/>
-    public CliCommand Create(string fileNameOrCommand, string arguments)
+    public CliCommand Create(string fileNameOrCommand, string? arguments)
     {
         string shellCommandArgument = BuildShellCommandArgument(fileNameOrCommand, arguments);
         string shellFullArguments = ShellArguments != null
@@ -52,5 +54,5 @@ public abstract class ShellCliCommandFactory : ICliCommandFactory
     /// <param name="command">The command.</param>
     /// <param name="commandArguments">The command arguments.</param>
     /// <returns>The shell command argument.</returns>
-    protected abstract string BuildShellCommandArgument(string command, string commandArguments);
+    protected abstract string BuildShellCommandArgument(string command, string? commandArguments);
 }

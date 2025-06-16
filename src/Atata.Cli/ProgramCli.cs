@@ -26,8 +26,11 @@ public class ProgramCli
     /// <param name="commandFactory">The command factory.</param>
     public ProgramCli(string fileNameOrCommand, ICliCommandFactory commandFactory)
     {
-        FileNameOrCommand = fileNameOrCommand.CheckNotNullOrWhitespace(nameof(fileNameOrCommand));
-        CliCommandFactory = commandFactory.CheckNotNull(nameof(commandFactory));
+        Guard.ThrowIfNullOrWhitespace(fileNameOrCommand);
+        Guard.ThrowIfNull(commandFactory);
+
+        FileNameOrCommand = fileNameOrCommand;
+        CliCommandFactory = commandFactory;
     }
 
     /// <summary>
@@ -61,7 +64,7 @@ public class ProgramCli
     /// <summary>
     /// Gets or sets the encoding to use.
     /// </summary>
-    public Encoding Encoding { get; set; }
+    public Encoding? Encoding { get; set; }
 
     /// <summary>
     /// Gets or sets the wait for exit timeout.
@@ -88,7 +91,7 @@ public class ProgramCli
     /// <returns>The same instance.</returns>
     public ProgramCli AddProcessStartInfoConfiguration(Action<ProcessStartInfo> configurationAction)
     {
-        configurationAction.CheckNotNull(nameof(configurationAction));
+        Guard.ThrowIfNull(configurationAction);
 
         ProcessStartInfoConfigurationActions.Add(configurationAction);
 
@@ -102,7 +105,10 @@ public class ProgramCli
     /// <returns>The same instance.</returns>
     public ProgramCli WithCliCommandFactory(ICliCommandFactory cliCommandFactory)
     {
-        CliCommandFactory = cliCommandFactory.CheckNotNull(nameof(cliCommandFactory));
+        Guard.ThrowIfNull(cliCommandFactory);
+
+        CliCommandFactory = cliCommandFactory;
+
         return this;
     }
 
@@ -113,7 +119,10 @@ public class ProgramCli
     /// <returns>The same instance.</returns>
     public ProgramCli WithWorkingDirectory(string workingDirectory)
     {
-        WorkingDirectory = workingDirectory.CheckNotNullOrWhitespace(nameof(workingDirectory));
+        Guard.ThrowIfNullOrWhitespace(workingDirectory);
+
+        WorkingDirectory = workingDirectory;
+
         return this;
     }
 
@@ -122,7 +131,7 @@ public class ProgramCli
     /// </summary>
     /// <param name="arguments">The arguments.</param>
     /// <returns>The started <see cref="CliCommand"/> instance.</returns>
-    public CliCommand Start(string arguments = null)
+    public CliCommand Start(string? arguments = null)
     {
         CliCommand command = CliCommandFactory.Create(FileNameOrCommand, arguments);
         FillStartInfo(command.StartInfo);
@@ -151,7 +160,7 @@ public class ProgramCli
     /// </summary>
     /// <param name="arguments">The arguments.</param>
     /// <returns>The <see cref="CliCommandResult"/> instance.</returns>
-    public CliCommandResult Execute(string arguments = null)
+    public CliCommandResult Execute(string? arguments = null)
     {
         CliCommandResult result = ExecuteRaw(arguments);
         ValidateResult(result);
@@ -166,7 +175,7 @@ public class ProgramCli
     }
 
     /// <inheritdoc cref="Execute(string)"/>
-    public async Task<CliCommandResult> ExecuteAsync(string arguments = null) =>
+    public async Task<CliCommandResult> ExecuteAsync(string? arguments = null) =>
         await Task.Run(() => Execute(arguments));
 
     /// <summary>
@@ -174,7 +183,7 @@ public class ProgramCli
     /// </summary>
     /// <param name="arguments">The arguments.</param>
     /// <returns>The <see cref="CliCommandResult"/> instance.</returns>
-    public CliCommandResult ExecuteRaw(string arguments = null)
+    public CliCommandResult ExecuteRaw(string? arguments = null)
     {
         using var command = Start(arguments);
 
@@ -182,6 +191,6 @@ public class ProgramCli
     }
 
     /// <inheritdoc cref="ExecuteRaw(string)"/>
-    public async Task<CliCommandResult> ExecuteRawAsync(string arguments = null) =>
+    public async Task<CliCommandResult> ExecuteRawAsync(string? arguments = null) =>
         await Task.Run(() => ExecuteRaw(arguments));
 }

@@ -46,7 +46,7 @@ public abstract class ProgramCli<TCli> : ProgramCli
     /// <returns>The created <typeparamref name="TCli"/> instance.</returns>
     public static TCli InDirectory(string directory)
     {
-        directory.CheckNotNullOrWhitespace(nameof(directory));
+        Guard.ThrowIfNullOrWhitespace(directory);
 
         return new TCli
         {

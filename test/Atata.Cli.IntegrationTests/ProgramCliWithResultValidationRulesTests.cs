@@ -2,7 +2,7 @@
 
 public class ProgramCliWithResultValidationRulesTests
 {
-    private Subject<ProgramCli> _sut;
+    private Subject<ProgramCli> _sut = null!;
 
     [SetUp]
     public void SetUp() =>

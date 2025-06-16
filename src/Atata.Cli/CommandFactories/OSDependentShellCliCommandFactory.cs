@@ -11,7 +11,7 @@ public class OSDependentShellCliCommandFactory : ICliCommandFactory
 {
     private readonly List<OSPlatformCommandFactoryItem> _osPlatformCommandFactoryMap = [];
 
-    private ICliCommandFactory _otherOSCommandFactory;
+    private ICliCommandFactory? _otherOSCommandFactory;
 
     /// <summary>
     /// Gets the <see cref="OSDependentShellCliCommandFactory"/> instance
@@ -59,8 +59,8 @@ public class OSDependentShellCliCommandFactory : ICliCommandFactory
     /// <returns>The configured <see cref="OSDependentShellCliCommandFactory"/> instance.</returns>
     public OSDependentShellCliCommandFactory UseForOS(OSPlatform osPlatform, ICliCommandFactory commandFactory)
     {
-        osPlatform.CheckNotNull(nameof(osPlatform));
-        commandFactory.CheckNotNull(nameof(commandFactory));
+        Guard.ThrowIfNull(osPlatform);
+        Guard.ThrowIfNull(commandFactory);
 
         _osPlatformCommandFactoryMap.RemoveAll(x => x.Platform == osPlatform);
         _osPlatformCommandFactoryMap.Add(new OSPlatformCommandFactoryItem(osPlatform, commandFactory));
@@ -75,12 +75,15 @@ public class OSDependentShellCliCommandFactory : ICliCommandFactory
     /// <returns>The configured <see cref="OSDependentShellCliCommandFactory"/> instance.</returns>
     public OSDependentShellCliCommandFactory UseForOtherOS(ICliCommandFactory commandFactory)
     {
-        _otherOSCommandFactory = commandFactory.CheckNotNull(nameof(commandFactory));
+        Guard.ThrowIfNull(commandFactory);
+
+        _otherOSCommandFactory = commandFactory;
+
         return this;
     }
 
     /// <inheritdoc/>
-    public CliCommand Create(string fileNameOrCommand, string arguments)
+    public CliCommand Create(string fileNameOrCommand, string? arguments)
     {
         ICliCommandFactory factory = _osPlatformCommandFactoryMap.Find(x => x.IsMatchCurrentOS())
             ?.CommandFactory ?? _otherOSCommandFactory
