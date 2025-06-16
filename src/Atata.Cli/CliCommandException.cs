@@ -31,24 +31,6 @@ public class CliCommandException : Exception
     {
     }
 
-    /// <summary>
-    /// Creates a new instance of the <see cref="CliCommandException"/> class.
-    /// </summary>
-    /// <param name="commandText">The command text.</param>
-    /// <param name="error">The error.</param>
-    /// <param name="output">The output.</param>
-    /// <param name="innerException">The inner exception.</param>
-    /// <returns>The <see cref="CliCommandException"/> instance.</returns>
-    [Obsolete("Use constructor instead.")] // Obsolete since v1.3.0.
-    public static CliCommandException Create(string commandText, string error, string? output = null, Exception? innerException = null) =>
-        Create(
-            commandText,
-            null,
-            error,
-            output,
-            null,
-            innerException);
-
     internal static CliCommandException CreateForAlreadyStartedCommand(string commandText, string workingDirectory) =>
         Create(
             commandText,
