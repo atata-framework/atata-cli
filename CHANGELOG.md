@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Enable nullable reference types feature.
+- Update `WaitForExit` and `Kill` methods of `CliCommand` to check whether a process has exited.
 
 ### Removed
 

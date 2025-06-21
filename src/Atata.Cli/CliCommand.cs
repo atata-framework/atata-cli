@@ -139,10 +139,10 @@ public class CliCommand : IDisposable
         if (!_isStarted)
             throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
-        int timeoutMilliseconds = -1;
+        if (_process.HasExited)
+            return _result!;
 
-        if (timeout != null)
-            timeoutMilliseconds = (int)timeout.Value.TotalMilliseconds;
+        int timeoutMilliseconds = ConvertTimeoutToMilliseconds(timeout);
 
         try
         {
@@ -184,6 +184,9 @@ public class CliCommand : IDisposable
 
         if (!_isStarted)
             throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
+
+        if (_process.HasExited)
+            return _result!;
 
         try
         {
@@ -291,5 +294,16 @@ public class CliCommand : IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    private static int ConvertTimeoutToMilliseconds(TimeSpan? timeout)
+    {
+        if (timeout is null)
+            return -1;
+
+        if (timeout.Value < TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(timeout), "Timeout cannot be negative.");
+
+        return (int)timeout.Value.TotalMilliseconds;
     }
 }
