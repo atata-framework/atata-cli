@@ -10,6 +10,9 @@ public class CliCommand : IDisposable
     private static readonly Lazy<MethodInfo> s_lazyProcessKillMethodWithBoolParameter = new(
         () => typeof(Process).GetMethod(nameof(Process.Kill), [typeof(bool)]));
 
+    private static readonly Lazy<MethodInfo> s_lazyProcessWaitForExitAsyncMethod = new(
+        () => typeof(Process).GetMethod("WaitForExitAsync", [typeof(CancellationToken)]));
+
     private readonly Process _process;
 
     private readonly StringBuilder _outputStringBuilder = new();
@@ -155,6 +158,23 @@ public class CliCommand : IDisposable
         {
             Dispose();
         }
+    }
+
+    public async Task<CliCommandResult> WaitForExitAsync(CancellationToken cancellationToken = default)
+    {
+        EnsureIsNotDisposed();
+
+        if (!_isStarted)
+            throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
+
+        if (_process.HasExited)
+            return _result!;
+
+        await WaitForProcessExitAsync(cancellationToken);
+
+        _exitResetEvent.Wait(cancellationToken);
+
+        return _result!;
     }
 
     /// <summary>
@@ -305,5 +325,15 @@ public class CliCommand : IDisposable
             throw new ArgumentOutOfRangeException(nameof(timeout), "Timeout cannot be negative.");
 
         return (int)timeout.Value.TotalMilliseconds;
+    }
+
+    private Task WaitForProcessExitAsync(CancellationToken cancellationToken)
+    {
+        var waitForExitAsyncMethod = s_lazyProcessWaitForExitAsyncMethod.Value;
+
+        if (waitForExitAsyncMethod is null)
+            throw new MissingMethodException(nameof(Process), "WaitForExitAsync(CancellationToken)");
+        else
+            return (Task)waitForExitAsyncMethod.Invoke(_process, [cancellationToken]);
     }
 }

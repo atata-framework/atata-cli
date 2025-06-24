@@ -1,5 +1,6 @@
 ﻿namespace Atata.Cli.IntegrationTests;
 
+// TODO: After Atata v4 upgrade. Remove usage of: .GetAwaiter().GetResult()
 [TestFixture]
 public class CliCommandTests
 {
@@ -65,13 +66,47 @@ public class CliCommandTests
     {
         using var sut = new CliCommand("dotnet", "--version");
 
-        sut.ToSutSubject()
-            .Act(x => x.Start())
-            .ResultOf(x => x.WaitForExit(null))
+        var subject = sut.ToSutSubject()
+            .Act(x => x.Start());
 
+        subject.ResultOf(x => x.WaitForExit(null))
             .ValueOf(x => x.ExitCode).Should.Equal(0)
             .ValueOf(x => x.Output).Should.Contain(".")
             .ValueOf(x => x.Error).Should.BeEmpty();
+    }
+
+    [Test]
+    public void WaitForExitAsync()
+    {
+        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+            .Create("sleep 1", null);
+
+        var subject = sut.ToSutSubject()
+            .Act(x => x.Start());
+
+        subject.ResultOf(x => x.WaitForExitAsync(CancellationToken.None).GetAwaiter().GetResult())
+            .ValueOf(x => x.ExitCode).Should.Equal(0);
+
+        subject.ValueOf(x => x.Process.HasExited)
+            .Should.BeTrue();
+    }
+
+    [Test]
+    public void WaitForExitAsync_WithCancel()
+    {
+        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+            .Create("sleep 10", null);
+
+        using CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromMilliseconds(300));
+
+        var subject = sut.ToSutSubject()
+            .Act(x => x.Start());
+
+        subject.Invoking(x => x.WaitForExitAsync(cancellationTokenSource.Token).GetAwaiter().GetResult())
+            .Should.Throw<TaskCanceledException>();
+
+        subject.ValueOf(x => x.Process.HasExited)
+            .Should.BeFalse();
     }
 
     [TestCase(true)]
