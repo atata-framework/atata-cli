@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Enable nullable reference types feature.
 - Update `WaitForExit` and `Kill` methods of `CliCommand` to check whether a process has exited.
+- Remove internal `Dispose` method call in the end of `WaitForExit` and `Kill` methods of `CliCommand`.
 
 ### Removed
 

@@ -73,6 +73,9 @@ public class CliCommandTests
             .ValueOf(x => x.ExitCode).Should.Equal(0)
             .ValueOf(x => x.Output).Should.Contain(".")
             .ValueOf(x => x.Error).Should.BeEmpty();
+
+        subject.ValueOf(x => x.Process.HasExited)
+            .Should.BeTrue();
     }
 
     [Test]

@@ -147,17 +147,10 @@ public class CliCommand : IDisposable
 
         int timeoutMilliseconds = ConvertTimeoutToMilliseconds(timeout);
 
-        try
-        {
-            if (_process.WaitForExit(timeoutMilliseconds) && _exitResetEvent.Wait(timeoutMilliseconds))
-                return _result!;
-            else
-                throw CliCommandException.CreateForTimeout(CommandText, StartInfo.WorkingDirectory);
-        }
-        finally
-        {
-            Dispose();
-        }
+        if (_process.WaitForExit(timeoutMilliseconds) && _exitResetEvent.Wait(timeoutMilliseconds))
+            return _result!;
+        else
+            throw CliCommandException.CreateForTimeout(CommandText, StartInfo.WorkingDirectory);
     }
 
     public async Task<CliCommandResult> WaitForExitAsync(CancellationToken cancellationToken = default)
@@ -208,20 +201,13 @@ public class CliCommand : IDisposable
         if (_process.HasExited)
             return _result!;
 
-        try
-        {
-            if (entireProcessTree)
-                KillEntireProcessTree();
-            else
-                _process.Kill();
+        if (entireProcessTree)
+            KillEntireProcessTree();
+        else
+            _process.Kill();
 
-            _exitResetEvent.Wait();
-            return _result!;
-        }
-        finally
-        {
-            Dispose();
-        }
+        _exitResetEvent.Wait();
+        return _result!;
     }
 
     private void KillEntireProcessTree()
