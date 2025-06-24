@@ -68,6 +68,13 @@ public class CliCommand : IDisposable
     public ProcessStartInfo StartInfo => _process.StartInfo;
 
     /// <summary>
+    /// Gets or sets the target to kill on dispose.
+    /// The default value is <see cref="CliCommandKillOnDispose.EntireProcessTree"/>.
+    /// </summary>
+    public CliCommandKillOnDispose KillOnDispose { get; set; } =
+        CliCommandKillOnDispose.EntireProcessTree;
+
+    /// <summary>
     /// Gets the executable command text.
     /// </summary>
     public string CommandText
@@ -292,6 +299,9 @@ public class CliCommand : IDisposable
         {
             if (disposing)
             {
+                if (_isStarted && KillOnDispose is CliCommandKillOnDispose.OnlyProcess or CliCommandKillOnDispose.EntireProcessTree)
+                    Kill(KillOnDispose is CliCommandKillOnDispose.EntireProcessTree);
+
                 _process.Dispose();
                 _outputResetEvent.Dispose();
                 _errorResetEvent.Dispose();

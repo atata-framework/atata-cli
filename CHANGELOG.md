@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `WaitForExitAsync(CancellationToken)` method to `CliCommand`.
-- Add `CliCommandResult? Result` property to `CliCommand`.
+- Add `public Task<CliCommandResult> WaitForExitAsync(CancellationToken)` method to `CliCommand`.
+- Add `public CliCommandResult? Result { get; }` property to `CliCommand`.
+- Add enum `CliCommandKillOnDispose` with values: `None`, `OnlyProcess`, `EntireProcessTree`.
+- Add `public CliCommandKillOnDispose KillOnDispose { get; set; } = CliCommandKillOnDispose.EntireProcessTree` property to `CliCommand`.
 
 ### Changed
 

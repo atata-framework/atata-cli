@@ -127,4 +127,41 @@ public class CliCommandTests
             .ValueOf(x => x.Output).Should.BeEmpty()
             .ValueOf(x => x.Error).Should.BeEmpty();
     }
+
+    [Test]
+    public void Dispose()
+    {
+        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+             .Create("sleep 5", null);
+
+        bool isExited = false;
+
+        sut.Process.Exited += (_, _) => isExited = true;
+
+        var subject = sut.ToSutSubject()
+            .Act(x => x.Start())
+            .Act(x => x.Dispose());
+
+        Subject.ResultOf(() => isExited)
+            .Should.BeTrue();
+    }
+
+    [Test]
+    public void Dispose_WhenKillOnDisposeIsNone()
+    {
+        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+             .Create("sleep 5", null);
+        sut.KillOnDispose = CliCommandKillOnDispose.None;
+
+        bool isExited = false;
+
+        sut.Process.Exited += (_, _) => isExited = true;
+
+        var subject = sut.ToSutSubject()
+            .Act(x => x.Start())
+            .Act(x => x.Dispose());
+
+        Subject.ResultOf(() => isExited)
+            .Should.BeFalse();
+    }
 }
