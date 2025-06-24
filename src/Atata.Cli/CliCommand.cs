@@ -99,6 +99,13 @@ public class CliCommand : IDisposable
     public string Error => _errorStringBuilder.ToString();
 
     /// <summary>
+    /// Gets the result of command.
+    /// Until the command is executed, the property returns <see langword="null"/>.
+    /// </summary>
+    public CliCommandResult? Result =>
+        _result;
+
+    /// <summary>
     /// Starts the command by starting the <see cref="Process"/> instance.
     /// </summary>
     /// <returns>The same instance.</returns>

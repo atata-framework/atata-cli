@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `WaitForExitAsync(CancellationToken)` method to `CliCommand`.
+- Add `CliCommandResult? Result` property to `CliCommand`.
 
 ### Changed
 
