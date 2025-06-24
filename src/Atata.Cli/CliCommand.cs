@@ -160,6 +160,11 @@ public class CliCommand : IDisposable
             throw CliCommandException.CreateForTimeout(CommandText, StartInfo.WorkingDirectory);
     }
 
+    /// <summary>
+    /// Waits asynchronously for the associated process to exit.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="Task{TResult}"/> of <see cref="CliCommandResult"/>.</returns>
     public async Task<CliCommandResult> WaitForExitAsync(CancellationToken cancellationToken = default)
     {
         EnsureIsNotDisposed();
@@ -170,7 +175,7 @@ public class CliCommand : IDisposable
         if (_process.HasExited)
             return _result!;
 
-        await WaitForProcessExitAsync(cancellationToken);
+        await WaitForProcessExitAsync(cancellationToken).ConfigureAwait(false);
 
         _exitResetEvent.Wait(cancellationToken);
 
