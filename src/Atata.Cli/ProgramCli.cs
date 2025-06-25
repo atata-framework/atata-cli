@@ -78,7 +78,7 @@ public class ProgramCli
 
     /// <summary>
     /// Gets or sets the command result validation rules that are performed in
-    /// <see cref="Execute(string)"/> and <see cref="ExecuteAsync(string)"/>
+    /// <see cref="Execute(string)"/> and <see cref="ExecuteAsync(string?, CancellationToken)"/>
     /// methods and produce <see cref="CliCommandException"/> throwing.
     /// The default value is <see cref="CliCommandResultValidationRules.ZeroExitCode"/>.
     /// </summary>
@@ -175,8 +175,14 @@ public class ProgramCli
     }
 
     /// <inheritdoc cref="Execute(string)"/>
-    public async Task<CliCommandResult> ExecuteAsync(string? arguments = null) =>
-        await Task.Run(() => Execute(arguments));
+    /// <param name="arguments">The arguments.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task<CliCommandResult> ExecuteAsync(string? arguments = null, CancellationToken cancellationToken = default)
+    {
+        CliCommandResult result = await ExecuteRawAsync(arguments, cancellationToken).ConfigureAwait(false);
+        ValidateResult(result);
+        return result;
+    }
 
     /// <summary>
     /// Starts the program with the specified arguments and waits until it exits.
@@ -191,6 +197,24 @@ public class ProgramCli
     }
 
     /// <inheritdoc cref="ExecuteRaw(string)"/>
-    public async Task<CliCommandResult> ExecuteRawAsync(string? arguments = null) =>
-        await Task.Run(() => ExecuteRaw(arguments));
+    /// <param name="arguments">The arguments.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public async Task<CliCommandResult> ExecuteRawAsync(string? arguments = null, CancellationToken cancellationToken = default)
+    {
+        using var command = Start(arguments);
+
+        TimeSpan? timeout = WaitForExitTimeout;
+
+        if (timeout is not null && timeout.Value > TimeSpan.Zero)
+        {
+            using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cancellationTokenSource.CancelAfter(timeout.Value);
+
+            return await command.WaitForExitAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+        }
+        else
+        {
+            return await command.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+        }
+    }
 }

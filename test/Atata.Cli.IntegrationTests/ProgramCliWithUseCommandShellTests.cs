@@ -21,6 +21,17 @@ public class ProgramCliWithUseCommandShellTests
     }
 
     [Test]
+    public void ExecuteAsync_WithValidArguments()
+    {
+        var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
+
+        sut.ResultOf(x => x.ExecuteAsync("--version", default).GetAwaiter().GetResult())
+            .ValueOf(x => x.ExitCode).Should.Equal(0)
+            .ValueOf(x => x.Output).Should.Contain(".")
+            .ValueOf(x => x.Error).Should.BeEmpty();
+    }
+
+    [Test]
     public void Execute_WithStringArgument()
     {
         var sut = new ProgramCli("dotnet", _useCommandShell)
@@ -43,6 +54,16 @@ public class ProgramCliWithUseCommandShellTests
         var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
 
         sut.ResultOf(x => x.Execute("--unknownflag"))
+            .Should.Throw<CliCommandException>()
+            .ValueOf(x => x.Message).Should.Contain("dotnet --unknownflag");
+    }
+
+    [Test]
+    public void ExecuteAsync_WithInvalidArguments()
+    {
+        var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
+
+        sut.ResultOf(x => x.ExecuteAsync("--unknownflag", default).GetAwaiter().GetResult())
             .Should.Throw<CliCommandException>()
             .ValueOf(x => x.Message).Should.Contain("dotnet --unknownflag");
     }
