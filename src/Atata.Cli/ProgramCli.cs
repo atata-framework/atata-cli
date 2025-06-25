@@ -175,6 +175,11 @@ public class ProgramCli
     }
 
     /// <inheritdoc cref="Execute(string)"/>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public Task<CliCommandResult> ExecuteAsync(CancellationToken cancellationToken) =>
+        ExecuteAsync(null, cancellationToken);
+
+    /// <inheritdoc cref="Execute(string)"/>
     /// <param name="arguments">The arguments.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task<CliCommandResult> ExecuteAsync(string? arguments = null, CancellationToken cancellationToken = default)
@@ -195,6 +200,11 @@ public class ProgramCli
 
         return command.WaitForExit(WaitForExitTimeout);
     }
+
+    /// <inheritdoc cref="ExecuteRaw(string)"/>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public Task<CliCommandResult> ExecuteRawAsync(CancellationToken cancellationToken) =>
+        ExecuteRawAsync(null, cancellationToken);
 
     /// <inheritdoc cref="ExecuteRaw(string)"/>
     /// <param name="arguments">The arguments.</param>
