@@ -5,18 +5,27 @@
 /// </summary>
 public sealed class CliCommandResult
 {
+    private readonly Func<string> _outputGetter;
+
+    private readonly Func<string> _errorGetter;
+
+    private readonly Func<string> _mergedOutputGetter;
+
     internal CliCommandResult(
         string commandText,
         string workingDirectory,
         int exitCode,
-        string output,
-        string error)
+        Func<string> outputGetter,
+        Func<string> errorGetter,
+        Func<string> mergedOutputGetter)
     {
         CommandText = commandText;
         WorkingDirectory = workingDirectory;
         ExitCode = exitCode;
-        Output = output;
-        Error = error;
+
+        _outputGetter = outputGetter;
+        _errorGetter = errorGetter;
+        _mergedOutputGetter = mergedOutputGetter;
     }
 
     /// <summary>
@@ -35,14 +44,22 @@ public sealed class CliCommandResult
     public int ExitCode { get; }
 
     /// <summary>
-    /// Gets the command output.
+    /// Gets the command standard output (stdout).
     /// </summary>
-    public string Output { get; }
+    public string Output =>
+        _outputGetter.Invoke();
 
     /// <summary>
-    /// Gets the command error.
+    /// Gets the command standard error (stderr).
     /// </summary>
-    public string Error { get; }
+    public string Error =>
+        _errorGetter.Invoke();
+
+    /// <summary>
+    /// Gets the command merged output: <see cref="Output"/> + <see cref="Error"/>.
+    /// </summary>
+    public string MergedOutput =>
+        _mergedOutputGetter.Invoke();
 
     /// <summary>
     /// Gets a value indicating whether the result has an error.

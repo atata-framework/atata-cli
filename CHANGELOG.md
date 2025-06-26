@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `public CliCommandKillOnDispose KillOnDispose { get; set; } = CliCommandKillOnDispose.EntireProcessTree` property to `CliCommand`.
 - Add `public Task<CliCommandResult> ExecuteAsync(CancellationToken)` method to `ProgramCli`.
 - Add `public Task<CliCommandResult> ExecuteRawAsync(CancellationToken)` method to `ProgramCli`.
+- Add `public string MergedOutput { get; }` property to `CliCommandResult` and `CliCommand`.
 
 ### Changed
 

@@ -19,6 +19,16 @@ public class CliCommand : IDisposable
 
     private readonly StringBuilder _errorStringBuilder = new();
 
+    private readonly StringBuilder _mergedOutputStringBuilder = new();
+
+    private readonly object _mergedOutputSyncLock = new();
+
+    private readonly Lazy<string> _lazyResultOutput;
+
+    private readonly Lazy<string> _lazyResultError;
+
+    private readonly Lazy<string> _lazyResultMergedOutput;
+
     private readonly ManualResetEventSlim _outputResetEvent = new();
 
     private readonly ManualResetEventSlim _errorResetEvent = new();
@@ -55,6 +65,10 @@ public class CliCommand : IDisposable
         _process.OutputDataReceived += OnProcessOutputDataReceived;
         _process.ErrorDataReceived += OnProcessErrorDataReceived;
         _process.Exited += OnProcessExited;
+
+        _lazyResultOutput = new(_outputStringBuilder.ToString);
+        _lazyResultError = new(_errorStringBuilder.ToString);
+        _lazyResultMergedOutput = new(_mergedOutputStringBuilder.ToString);
     }
 
     /// <summary>
@@ -81,13 +95,13 @@ public class CliCommand : IDisposable
     {
         get
         {
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
-            if (!string.IsNullOrEmpty(StartInfo.FileName))
+            if (StartInfo.FileName?.Length > 0)
             {
                 builder.Append(StartInfo.FileName);
 
-                if (!string.IsNullOrEmpty(StartInfo.Arguments))
+                if (StartInfo.Arguments?.Length > 0)
                     builder.Append(' ').Append(StartInfo.Arguments);
             }
 
@@ -96,14 +110,28 @@ public class CliCommand : IDisposable
     }
 
     /// <summary>
-    /// Gets the output of command.
+    /// Gets the command standard output (stdout).
     /// </summary>
-    public string Output => _outputStringBuilder.ToString();
+    public string Output =>
+        _result is null
+            ? _outputStringBuilder.ToString()
+            : GetResultOutput();
 
     /// <summary>
-    /// Gets the error of command.
+    /// Gets the command standard error (stderr).
     /// </summary>
-    public string Error => _errorStringBuilder.ToString();
+    public string Error =>
+        _result is null
+            ? _errorStringBuilder.ToString()
+            : GetResultError();
+
+    /// <summary>
+    /// Gets the command merged output: <see cref="Output"/> + <see cref="Error"/>.
+    /// </summary>
+    public string MergedOutput =>
+        _result is null
+            ? _mergedOutputStringBuilder.ToString()
+            : GetResultMergedOutput();
 
     /// <summary>
     /// Gets the result of command.
@@ -241,31 +269,33 @@ public class CliCommand : IDisposable
 
     private void OnProcessOutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if (e.Data == null)
+        if (e.Data is null)
         {
             _outputResetEvent.Set();
         }
         else
         {
-            if (_outputStringBuilder.Length > 0)
-                _outputStringBuilder.AppendLine();
-
-            _outputStringBuilder.Append(e.Data);
+            lock (_mergedOutputSyncLock)
+            {
+                AppendLineToStringBuilder(e.Data, _outputStringBuilder);
+                AppendLineToStringBuilder(e.Data, _mergedOutputStringBuilder);
+            }
         }
     }
 
     private void OnProcessErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if (e.Data == null)
+        if (e.Data is null)
         {
             _errorResetEvent.Set();
         }
         else
         {
-            if (_errorStringBuilder.Length > 0)
-                _errorStringBuilder.AppendLine();
-
-            _errorStringBuilder.Append(e.Data);
+            lock (_mergedOutputSyncLock)
+            {
+                AppendLineToStringBuilder(e.Data, _errorStringBuilder);
+                AppendLineToStringBuilder(e.Data, _mergedOutputStringBuilder);
+            }
         }
     }
 
@@ -284,8 +314,18 @@ public class CliCommand : IDisposable
             CommandText,
             StartInfo.WorkingDirectory,
             _process.ExitCode,
-            _outputStringBuilder.ToString(),
-            _errorStringBuilder.ToString());
+            GetResultOutput,
+            GetResultError,
+            GetResultMergedOutput);
+
+    private string GetResultOutput() =>
+        _lazyResultOutput.Value;
+
+    private string GetResultError() =>
+        _lazyResultError.Value;
+
+    private string GetResultMergedOutput() =>
+        _lazyResultMergedOutput.Value;
 
     private void EnsureIsNotDisposed()
     {
@@ -306,9 +346,6 @@ public class CliCommand : IDisposable
                 _outputResetEvent.Dispose();
                 _errorResetEvent.Dispose();
                 _exitResetEvent.Dispose();
-
-                _outputStringBuilder.Clear();
-                _errorStringBuilder.Clear();
             }
 
             _isDisposed = true;
@@ -333,6 +370,14 @@ public class CliCommand : IDisposable
             throw new ArgumentOutOfRangeException(nameof(timeout), "Timeout cannot be negative.");
 
         return (int)timeout.Value.TotalMilliseconds;
+    }
+
+    private static void AppendLineToStringBuilder(string line, StringBuilder stringBuilder)
+    {
+        if (stringBuilder.Length > 0)
+            stringBuilder.AppendLine();
+
+        stringBuilder.Append(line);
     }
 
     private Task WaitForProcessExitAsync(CancellationToken cancellationToken)
