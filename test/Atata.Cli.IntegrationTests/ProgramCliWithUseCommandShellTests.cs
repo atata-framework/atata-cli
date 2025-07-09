@@ -15,7 +15,7 @@ public class ProgramCliWithUseCommandShellTests
         var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
 
         sut.ResultOf(x => x.Execute("--version"))
-            .ValueOf(x => x.ExitCode).Should.Equal(0)
+            .ValueOf(x => x.ExitCode).Should.Be(0)
             .ValueOf(x => x.Output).Should.Contain(".")
             .ValueOf(x => x.Error).Should.BeEmpty();
     }
@@ -26,7 +26,7 @@ public class ProgramCliWithUseCommandShellTests
         var sut = new ProgramCli("dotnet", _useCommandShell).ToSutSubject();
 
         sut.ResultOf(x => x.ExecuteAsync("--version", default).GetAwaiter().GetResult())
-            .ValueOf(x => x.ExitCode).Should.Equal(0)
+            .ValueOf(x => x.ExitCode).Should.Be(0)
             .ValueOf(x => x.Output).Should.Contain(".")
             .ValueOf(x => x.Error).Should.BeEmpty();
     }
@@ -43,7 +43,7 @@ public class ProgramCliWithUseCommandShellTests
         string arguments = $"restore \"{projectName}.csproj\"";
 
         sut.ResultOf(x => x.Execute(arguments))
-            .ValueOf(x => x.ExitCode).Should.Equal(0)
+            .ValueOf(x => x.ExitCode).Should.Be(0)
             .ValueOf(x => x.Output).Should.Contain("restore...")
             .ValueOf(x => x.Error).Should.BeEmpty();
     }

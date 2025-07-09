@@ -57,7 +57,7 @@ public class CliCommandTests
             .Act(x => x.Start())
             .ResultOf(x => x.WaitForExit(null))
 
-            .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
+            .ValueOf(x => x.ExitCode).Should.Not.Be(0)
             .ValueOf(x => x.Error).Should.Not.BeNullOrWhiteSpace();
     }
 
@@ -70,7 +70,7 @@ public class CliCommandTests
             .Act(x => x.Start());
 
         subject.ResultOf(x => x.WaitForExit(null))
-            .ValueOf(x => x.ExitCode).Should.Equal(0)
+            .ValueOf(x => x.ExitCode).Should.Be(0)
             .ValueOf(x => x.Output).Should.Contain(".")
             .ValueOf(x => x.Error).Should.BeEmpty();
 
@@ -88,7 +88,7 @@ public class CliCommandTests
             .Act(x => x.Start());
 
         subject.ResultOf(x => x.WaitForExitAsync(CancellationToken.None).GetAwaiter().GetResult())
-            .ValueOf(x => x.ExitCode).Should.Equal(0);
+            .ValueOf(x => x.ExitCode).Should.Be(0);
 
         subject.ValueOf(x => x.Process.HasExited)
             .Should.BeTrue();
@@ -123,7 +123,7 @@ public class CliCommandTests
             .Act(x => x.Start())
             .ResultOf(x => x.Kill(entireProcessTree))
 
-            .ValueOf(x => x.ExitCode).Should.Not.Equal(0)
+            .ValueOf(x => x.ExitCode).Should.Not.Be(0)
             .ValueOf(x => x.Output).Should.BeEmpty()
             .ValueOf(x => x.Error).Should.BeEmpty();
     }
