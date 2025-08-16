@@ -58,6 +58,15 @@ public class CliCommandException : Exception
             null,
             null);
 
+    internal static CliCommandException CreateForResultResolveFailure(string commandText, string workingDirectory) =>
+        Create(
+            commandText,
+            workingDirectory,
+            "Failed to resolve command result.",
+            null,
+            null,
+            null);
+
     internal static CliCommandException CreateForErrorResult(CliCommandResult result) =>
         Create(
             result.CommandText,

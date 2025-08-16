@@ -184,15 +184,27 @@ public class CliCommand : IDisposable
         if (!_isStarted)
             throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
-        if (_process.HasExited)
-            return _result!;
-
         int timeoutMilliseconds = ConvertTimeoutToMilliseconds(timeout);
 
-        if (_process.WaitForExit(timeoutMilliseconds) && _exitResetEvent.Wait(timeoutMilliseconds))
-            return _result!;
-        else
+        if (!_process.HasExited)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            bool hasExitedAfterWait = _process.WaitForExit(timeoutMilliseconds);
+
+            if (!hasExitedAfterWait)
+                throw CliCommandException.CreateForTimeout(CommandText, StartInfo.WorkingDirectory);
+
+            if (timeoutMilliseconds != -1)
+            {
+                timeoutMilliseconds -= (int)stopwatch.ElapsedMilliseconds;
+                timeoutMilliseconds = Math.Max(timeoutMilliseconds, 0);
+            }
+        }
+
+        if (!_exitResetEvent.Wait(timeoutMilliseconds))
             throw CliCommandException.CreateForTimeout(CommandText, StartInfo.WorkingDirectory);
+
+        return ResolveResult();
     }
 
     /// <summary>
@@ -207,15 +219,16 @@ public class CliCommand : IDisposable
         if (!_isStarted)
             throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
-        if (_process.HasExited)
-            return _result!;
-
-        await WaitForProcessExitAsync(cancellationToken).ConfigureAwait(false);
+        if (!_process.HasExited)
+            await WaitForProcessExitAsync(cancellationToken).ConfigureAwait(false);
 
         _exitResetEvent.Wait(cancellationToken);
 
-        return _result!;
+        return ResolveResult();
     }
+
+    private CliCommandResult ResolveResult() =>
+        _result ?? throw CliCommandException.CreateForResultResolveFailure(CommandText, StartInfo.WorkingDirectory);
 
     /// <summary>
     /// Immediately stops the associated process.
@@ -245,16 +258,16 @@ public class CliCommand : IDisposable
         if (!_isStarted)
             throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
-        if (_process.HasExited)
-            return _result!;
-
-        if (entireProcessTree)
-            KillEntireProcessTree();
-        else
-            _process.Kill();
+        if (!_process.HasExited)
+        {
+            if (entireProcessTree)
+                KillEntireProcessTree();
+            else
+                _process.Kill();
+        }
 
         _exitResetEvent.Wait();
-        return _result!;
+        return ResolveResult();
     }
 
     private void KillEntireProcessTree()
