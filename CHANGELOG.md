@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change package target frameworks from .NET Standard 2.0 to .NET 8.0 and .NET Framework 4.6.2.
 - Enable nullable reference types.
 - Update `WaitForExit` and `Kill` methods of `CliCommand` to check whether a process has exited.
 - Remove internal `Dispose` method call in the end of `WaitForExit` and `Kill` methods of `CliCommand`.
