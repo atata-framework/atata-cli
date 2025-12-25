@@ -25,16 +25,16 @@ jobs:
     matrix:
       Linux:
         imageName: 'ubuntu-latest'
-        testsTargetFramework: 'net10.0'
+        testTargetFramework: net10.0
       macOS:
         imageName: 'macOS-latest'
-        testsTargetFramework: 'net10.0'
+        testTargetFramework: net10.0
       Windows:
         imageName: 'windows-latest'
-        testsTargetFramework: 'net10.0'
+        testTargetFramework: net10.0
       Windows-NetFramework:
         imageName: 'windows-latest'
-        testsTargetFramework: 'net462'
+        testTargetFramework: net462
   pool:
     vmImage: $(imageName)
   steps:
@@ -54,4 +54,4 @@ jobs:
     inputs:
       command: test
       projects: 'test/*/*IntegrationTests.csproj'
-      arguments: -c $(buildConfiguration) -s "azure-pipelines.runsettings" --no-build -f $(testsTargetFramework)
+      arguments: -c $(buildConfiguration) -s "azure-pipelines.runsettings" --no-build -f $(testTargetFramework)
