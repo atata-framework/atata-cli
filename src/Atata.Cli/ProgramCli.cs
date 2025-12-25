@@ -220,6 +220,9 @@ public class ProgramCli
     /// <param name="cancellationToken">The cancellation token.</param>
     public async Task<CliCommandResult> ExecuteRawAsync(string? arguments = null, CancellationToken cancellationToken = default)
     {
+#if NETFRAMEWORK
+        return await Task.Run(() => ExecuteRaw(arguments), cancellationToken).ConfigureAwait(false);
+#else
         using var command = Start(arguments);
 
         TimeSpan? timeout = WaitForExitTimeout;
@@ -235,5 +238,6 @@ public class ProgramCli
         {
             return await command.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
         }
+#endif
     }
 }

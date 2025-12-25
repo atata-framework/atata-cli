@@ -7,9 +7,6 @@
 /// </summary>
 public class CliCommand : IDisposable
 {
-    private static readonly Lazy<MethodInfo> s_lazyProcessWaitForExitAsyncMethod = new(
-        () => typeof(Process).GetMethod("WaitForExitAsync", [typeof(CancellationToken)])!);
-
     private readonly Process _process;
 
     private readonly StringBuilder _outputStringBuilder = new();
@@ -213,6 +210,7 @@ public class CliCommand : IDisposable
         return ResolveResult();
     }
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Waits asynchronously for the associated process to exit.
     /// </summary>
@@ -226,12 +224,13 @@ public class CliCommand : IDisposable
             throw CliCommandException.CreateForNotStartedCommand(CommandText, StartInfo.WorkingDirectory);
 
         if (!_process.HasExited)
-            await WaitForProcessExitAsync(cancellationToken).ConfigureAwait(false);
+            await _process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
 
         _exitResetEvent.Wait(cancellationToken);
 
         return ResolveResult();
     }
+#endif
 
     private CliCommandResult ResolveResult() =>
         _result ?? throw CliCommandException.CreateForResultResolveFailure(CommandText, StartInfo.WorkingDirectory);
@@ -409,15 +408,5 @@ public class CliCommand : IDisposable
             stringBuilder.AppendLine();
 
         stringBuilder.Append(line);
-    }
-
-    private Task WaitForProcessExitAsync(CancellationToken cancellationToken)
-    {
-        var waitForExitAsyncMethod = s_lazyProcessWaitForExitAsyncMethod.Value;
-
-        if (waitForExitAsyncMethod is null)
-            throw new MissingMethodException(nameof(Process), "WaitForExitAsync(CancellationToken)");
-        else
-            return (Task)waitForExitAsyncMethod.Invoke(_process, [cancellationToken])!;
     }
 }

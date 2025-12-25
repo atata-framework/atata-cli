@@ -76,6 +76,7 @@ public sealed class CliCommandTests
             .Should.BeTrue();
     }
 
+#if NET8_0_OR_GREATER
     [Test]
     public void WaitForExitAsync()
     {
@@ -110,7 +111,6 @@ public sealed class CliCommandTests
             .Should.BeFalse();
     }
 
-#if NET8_0_OR_GREATER
     [TestCase(true)]
     [TestCase(false)]
     public void Kill(bool entireProcessTree)
