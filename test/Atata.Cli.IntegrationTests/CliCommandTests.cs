@@ -110,6 +110,7 @@ public sealed class CliCommandTests
             .Should.BeFalse();
     }
 
+#if NET8_0_OR_GREATER
     [TestCase(true)]
     [TestCase(false)]
     public void Kill(bool entireProcessTree)
@@ -125,6 +126,7 @@ public sealed class CliCommandTests
             .ValueOf(x => x.Output).Should.BeEmpty()
             .ValueOf(x => x.Error).Should.BeEmpty();
     }
+#endif
 
     [Test]
     public void Dispose()

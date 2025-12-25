@@ -13,10 +13,12 @@ public enum CliCommandKillOnDispose
     /// <summary>
     /// Kills only the main process.
     /// </summary>
-    OnlyProcess,
+    Process,
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Kills the entire process tree.
     /// </summary>
     EntireProcessTree
+#endif
 }

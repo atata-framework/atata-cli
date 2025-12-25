@@ -7,9 +7,6 @@
 /// </summary>
 public class CliCommand : IDisposable
 {
-    private static readonly Lazy<MethodInfo> s_lazyProcessKillMethodWithBoolParameter = new(
-        () => typeof(Process).GetMethod(nameof(Process.Kill), [typeof(bool)])!);
-
     private static readonly Lazy<MethodInfo> s_lazyProcessWaitForExitAsyncMethod = new(
         () => typeof(Process).GetMethod("WaitForExitAsync", [typeof(CancellationToken)])!);
 
@@ -81,12 +78,21 @@ public class CliCommand : IDisposable
     /// </summary>
     public ProcessStartInfo StartInfo => _process.StartInfo;
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Gets or sets the target to kill on dispose.
     /// The default value is <see cref="CliCommandKillOnDispose.EntireProcessTree"/>.
     /// </summary>
     public CliCommandKillOnDispose KillOnDispose { get; set; } =
         CliCommandKillOnDispose.EntireProcessTree;
+#else
+    /// <summary>
+    /// Gets or sets the target to kill on dispose.
+    /// The default value is <see cref="CliCommandKillOnDispose.Process"/>.
+    /// </summary>
+    public CliCommandKillOnDispose KillOnDispose { get; set; } =
+        CliCommandKillOnDispose.Process;
+#endif
 
     /// <summary>
     /// Gets the executable command text.
@@ -237,8 +243,9 @@ public class CliCommand : IDisposable
     /// <exception cref="ObjectDisposedException">Cannot access a disposed object.</exception>
     /// <exception cref="CliCommandException">The command was not started.</exception>
     public CliCommandResult Kill() =>
-        Kill(false);
+        DoKill(false);
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Immediately stops the associated process, and optionally its child/descendent processes.
     /// </summary>
@@ -249,7 +256,11 @@ public class CliCommand : IDisposable
     /// <returns>The command result.</returns>
     /// <exception cref="ObjectDisposedException">Cannot access a disposed object.</exception>
     /// <exception cref="CliCommandException">The command was not started.</exception>
-    public CliCommandResult Kill(bool entireProcessTree)
+    public CliCommandResult Kill(bool entireProcessTree) =>
+        DoKill(entireProcessTree);
+#endif
+
+    private CliCommandResult DoKill(bool entireProcessTree)
     {
         EnsureIsNotDisposed();
 
@@ -268,15 +279,13 @@ public class CliCommand : IDisposable
         return ResolveResult();
     }
 
-    private void KillEntireProcessTree()
-    {
-        var killMethod = s_lazyProcessKillMethodWithBoolParameter.Value;
-
-        if (killMethod is null)
-            throw new MissingMethodException(nameof(Process), $"{nameof(Process.Kill)}(bool)");
-        else
-            killMethod.Invoke(_process, [true]);
-    }
+    [SuppressMessage("Minor Code Smell", "S2325:Methods and properties that don't access instance data should be static")]
+    private void KillEntireProcessTree() =>
+#if NETFRAMEWORK
+        throw new NotSupportedException("Killing entire process tree is not supported in .NET Framework.");
+#else
+        _process.Kill(true);
+#endif
 
     private void OnProcessOutputDataReceived(object sender, DataReceivedEventArgs e)
     {
@@ -347,8 +356,7 @@ public class CliCommand : IDisposable
         {
             if (disposing)
             {
-                if (_isStarted && KillOnDispose is CliCommandKillOnDispose.OnlyProcess or CliCommandKillOnDispose.EntireProcessTree)
-                    Kill(KillOnDispose is CliCommandKillOnDispose.EntireProcessTree);
+                KillOnDisposeIfStartedAndNotExited();
 
                 _process.Dispose();
                 _outputResetEvent.Dispose();
@@ -357,6 +365,21 @@ public class CliCommand : IDisposable
             }
 
             _isDisposed = true;
+        }
+    }
+
+    [SuppressMessage("Major Code Smell", "S1066:Mergeable \"if\" statements should be combined")]
+    private void KillOnDisposeIfStartedAndNotExited()
+    {
+        if (_isStarted)
+        {
+#if NET8_0_OR_GREATER
+            if (KillOnDispose is CliCommandKillOnDispose.EntireProcessTree)
+                DoKill(true);
+#endif
+
+            if (KillOnDispose is CliCommandKillOnDispose.Process)
+                DoKill(false);
         }
     }
 
