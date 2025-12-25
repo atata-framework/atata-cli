@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net8.0;net462</TargetFrameworks>
     <Version>4.0.0-beta.2</Version>
     <Description>
 C#/.NET library that provides an API for CLI and process execution.
-
-The package targets .NET Standard 2.0, which supports .NET 5+, .NET Framework 4.6.1+ and .NET Core/Standard 2.0+.
 
 Features:
 - Provides an abstraction over System.Diagnostics.Process with CliCommand and ProgramCli classes.
 - Has ability to execute CLI through command shell: cmd, sh, bash, sudo, etc.
 - Provides synchronous and asynchronous API methods.
 - Works on Windows, Linux and macOS.
+
+The package targets .NET 8.0 and .NET Framework 4.6.2.
     </Description>
     <RepositoryUrl>https://github.com/atata-framework/atata-cli</RepositoryUrl>
     <PackageId>Atata.Cli</PackageId>

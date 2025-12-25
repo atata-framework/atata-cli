@@ -33,12 +33,21 @@ public class ProgramCli
         CliCommandFactory = commandFactory;
     }
 
+#if NETFRAMEWORK
+    /// <summary>
+    /// Gets or sets the default shell <see cref="ICliCommandFactory"/> instance.
+    /// The default value is an instance of <see cref="CmdShellCliCommandFactory"/>.
+    /// </summary>
+    public static ICliCommandFactory DefaultShellCliCommandFactory { get; set; } =
+        new CmdShellCliCommandFactory();
+#else
     /// <summary>
     /// Gets or sets the default shell <see cref="ICliCommandFactory"/> instance.
     /// The default value is <see cref="OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers"/>.
     /// </summary>
     public static ICliCommandFactory DefaultShellCliCommandFactory { get; set; } =
         OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers();
+#endif
 
     /// <summary>
     /// Gets the program file name or command.

@@ -8,10 +8,10 @@
 public class CliCommand : IDisposable
 {
     private static readonly Lazy<MethodInfo> s_lazyProcessKillMethodWithBoolParameter = new(
-        () => typeof(Process).GetMethod(nameof(Process.Kill), [typeof(bool)]));
+        () => typeof(Process).GetMethod(nameof(Process.Kill), [typeof(bool)])!);
 
     private static readonly Lazy<MethodInfo> s_lazyProcessWaitForExitAsyncMethod = new(
-        () => typeof(Process).GetMethod("WaitForExitAsync", [typeof(CancellationToken)]));
+        () => typeof(Process).GetMethod("WaitForExitAsync", [typeof(CancellationToken)])!);
 
     private readonly Process _process;
 
@@ -50,7 +50,7 @@ public class CliCommand : IDisposable
     {
         _process = new Process
         {
-            StartInfo = new ProcessStartInfo(fileName, arguments)
+            StartInfo = new ProcessStartInfo(fileName, arguments ?? string.Empty)
             {
                 WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
                 RedirectStandardOutput = true,
@@ -312,7 +312,7 @@ public class CliCommand : IDisposable
         }
     }
 
-    private void OnProcessExited(object sender, EventArgs e)
+    private void OnProcessExited(object? sender, EventArgs e)
     {
         _outputResetEvent.Wait();
         _errorResetEvent.Wait();
@@ -340,11 +340,8 @@ public class CliCommand : IDisposable
     private string GetResultMergedOutput() =>
         _lazyResultMergedOutput.Value;
 
-    private void EnsureIsNotDisposed()
-    {
-        if (_isDisposed)
-            throw new ObjectDisposedException(GetType().FullName);
-    }
+    private void EnsureIsNotDisposed() =>
+        Guard.ThrowIfDisposed(_isDisposed, this);
 
     protected virtual void Dispose(bool disposing)
     {
@@ -400,6 +397,6 @@ public class CliCommand : IDisposable
         if (waitForExitAsyncMethod is null)
             throw new MissingMethodException(nameof(Process), "WaitForExitAsync(CancellationToken)");
         else
-            return (Task)waitForExitAsyncMethod.Invoke(_process, [cancellationToken]);
+            return (Task)waitForExitAsyncMethod.Invoke(_process, [cancellationToken])!;
     }
 }

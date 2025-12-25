@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿#if !NETFRAMEWORK
+
+using System.Runtime.InteropServices;
 
 namespace Atata.Cli;
 
@@ -108,3 +110,4 @@ public class OSDependentShellCliCommandFactory : ICliCommandFactory
             RuntimeInformation.IsOSPlatform(Platform);
     }
 }
+#endif
