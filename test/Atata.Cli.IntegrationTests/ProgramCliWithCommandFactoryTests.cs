@@ -1,6 +1,6 @@
 ﻿namespace Atata.Cli.IntegrationTests;
 
-public class ProgramCliWithCommandFactoryTests
+public sealed class ProgramCliWithCommandFactoryTests
 {
     [Test]
     [Platform(Include = Platforms.Windows)]

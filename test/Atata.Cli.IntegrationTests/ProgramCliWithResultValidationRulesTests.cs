@@ -1,6 +1,6 @@
 ﻿namespace Atata.Cli.IntegrationTests;
 
-public class ProgramCliWithResultValidationRulesTests
+public sealed class ProgramCliWithResultValidationRulesTests
 {
     private Subject<ProgramCli> _sut = null!;
 

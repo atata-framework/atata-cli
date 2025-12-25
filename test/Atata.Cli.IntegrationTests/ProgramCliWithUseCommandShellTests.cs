@@ -2,7 +2,7 @@
 
 [TestFixture(true)]
 [TestFixture(false)]
-public class ProgramCliWithUseCommandShellTests
+public sealed class ProgramCliWithUseCommandShellTests
 {
     private readonly bool _useCommandShell;
 
