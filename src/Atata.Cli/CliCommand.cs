@@ -232,7 +232,6 @@ public class CliCommand : IDisposable
 
     /// <summary>
     /// Immediately stops the associated process.
-    /// After killing the process, disposes the <see cref="CliCommand"/> instance.
     /// </summary>
     /// <returns>The command result.</returns>
     /// <exception cref="ObjectDisposedException">Cannot access a disposed object.</exception>
@@ -242,7 +241,6 @@ public class CliCommand : IDisposable
 
     /// <summary>
     /// Immediately stops the associated process, and optionally its child/descendent processes.
-    /// After killing the process, disposes the <see cref="CliCommand"/> instance.
     /// </summary>
     /// <param name="entireProcessTree">
     /// <see langword="true"/> to kill the associated process and its descendants;
