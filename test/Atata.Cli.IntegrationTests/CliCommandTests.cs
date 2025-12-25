@@ -1,12 +1,11 @@
 ﻿namespace Atata.Cli.IntegrationTests;
 
-[TestFixture]
-public class CliCommandTests
+public sealed class CliCommandTests
 {
     [Test]
     public void Start_WithMissingDirectory()
     {
-        using var command = new CliCommand("dotnet", "--version");
+        using CliCommand command = new("dotnet", "--version");
         command.StartInfo.WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString());
 
         var sut = command.ToSutSubject();
@@ -29,7 +28,7 @@ public class CliCommandTests
     [Test]
     public void Start_WithMissingFileName()
     {
-        using var command = new CliCommand("somemissingprogram");
+        using CliCommand command = new("somemissingprogram");
         var sut = command.ToSutSubject();
 
         sut.ResultOf(x => x.Start())
@@ -50,7 +49,7 @@ public class CliCommandTests
     [Test]
     public void Start_WithInvalidArguments()
     {
-        using var sut = new CliCommand("dotnet", "--unknownarg");
+        using CliCommand sut = new("dotnet", "--unknownarg");
 
         sut.ToSutSubject()
             .Act(x => x.Start())
@@ -63,7 +62,7 @@ public class CliCommandTests
     [Test]
     public void WaitForExit()
     {
-        using var sut = new CliCommand("dotnet", "--version");
+        using CliCommand sut = new("dotnet", "--version");
 
         var subject = sut.ToSutSubject()
             .Act(x => x.Start());
@@ -80,7 +79,7 @@ public class CliCommandTests
     [Test]
     public void WaitForExitAsync()
     {
-        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+        using var sut = CreateDefaultFactory()
             .Create("sleep 1", null);
 
         var subject = sut.ToSutSubject()
@@ -96,7 +95,7 @@ public class CliCommandTests
     [Test]
     public void WaitForExitAsync_WithCancel()
     {
-        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+        using var sut = CreateDefaultFactory()
             .Create("sleep 10", null);
 
         using CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromMilliseconds(300));
@@ -115,7 +114,7 @@ public class CliCommandTests
     [TestCase(false)]
     public void Kill(bool entireProcessTree)
     {
-        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+        using var sut = CreateDefaultFactory()
             .Create("sleep 5", null);
 
         sut.ToSutSubject()
@@ -130,7 +129,7 @@ public class CliCommandTests
     [Test]
     public void Dispose()
     {
-        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+        using var sut = CreateDefaultFactory()
              .Create("sleep 5", null);
 
         bool isExited = false;
@@ -148,7 +147,7 @@ public class CliCommandTests
     [Test]
     public void Dispose_WhenKillOnDisposeIsNone()
     {
-        using var sut = OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers()
+        using var sut = CreateDefaultFactory()
              .Create("sleep 5", null);
         sut.KillOnDispose = CliCommandKillOnDispose.None;
 
@@ -163,4 +162,12 @@ public class CliCommandTests
         Subject.ResultOf(() => isExited)
             .Should.BeFalse();
     }
+
+    [SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance")]
+    private static ICliCommandFactory CreateDefaultFactory() =>
+#if NETFRAMEWORK
+        new CmdShellCliCommandFactory();
+#else
+        OSDependentShellCliCommandFactory.UseCmdForWindowsAndShForOthers();
+#endif
 }
