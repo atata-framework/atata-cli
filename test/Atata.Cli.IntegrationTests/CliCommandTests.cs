@@ -1,6 +1,5 @@
 ﻿namespace Atata.Cli.IntegrationTests;
 
-// TODO: After Atata v4 upgrade. Remove usage of: .GetAwaiter().GetResult()
 [TestFixture]
 public class CliCommandTests
 {
@@ -87,7 +86,7 @@ public class CliCommandTests
         var subject = sut.ToSutSubject()
             .Act(x => x.Start());
 
-        subject.ResultOf(x => x.WaitForExitAsync(CancellationToken.None).GetAwaiter().GetResult())
+        subject.ResultOf(x => x.WaitForExitAsync(CancellationToken.None))
             .ValueOf(x => x.ExitCode).Should.Be(0);
 
         subject.ValueOf(x => x.Process.HasExited)
@@ -105,7 +104,7 @@ public class CliCommandTests
         var subject = sut.ToSutSubject()
             .Act(x => x.Start());
 
-        subject.Invoking(x => x.WaitForExitAsync(cancellationTokenSource.Token).GetAwaiter().GetResult())
+        subject.Invoking(x => x.WaitForExitAsync(cancellationTokenSource.Token))
             .Should.Throw<TaskCanceledException>();
 
         subject.ValueOf(x => x.Process.HasExited)
