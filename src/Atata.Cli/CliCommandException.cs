@@ -95,7 +95,9 @@ public class CliCommandException : Exception
     {
         StringBuilder messageBuilder = new(error);
 
-        if (!error.EndsWith(".", StringComparison.Ordinal))
+        if (error is [])
+            messageBuilder.Append("Unknown error without details.");
+        else if (error[^1] != '.')
             messageBuilder.Append('.');
 
         messageBuilder
