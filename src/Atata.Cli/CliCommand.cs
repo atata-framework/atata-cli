@@ -323,6 +323,10 @@ public class CliCommand : IDisposable
         _outputResetEvent.Wait();
         _errorResetEvent.Wait();
 
+        _process.OutputDataReceived -= OnProcessOutputDataReceived;
+        _process.ErrorDataReceived -= OnProcessErrorDataReceived;
+        _process.Exited -= OnProcessExited;
+
         CollectResult();
 
         _exitResetEvent.Set();
