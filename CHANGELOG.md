@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.0.0] - 2026-08-30
+## [4.0.0] - 2026-08-31
 
 ### Added
 
@@ -116,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial version release.
 
-[Unreleased]: https://github.com/atata-framework/atata-cli/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/atata-framework/atata-cli/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/atata-framework/atata-cli/compare/v2.2.0...v4.0.0
 [2.2.0]: https://github.com/atata-framework/atata-cli/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/atata-framework/atata-cli/compare/v2.0.0...v2.1.0
