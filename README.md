@@ -11,16 +11,6 @@
 
 *The package targets .NET 8.0 and .NET Framework 4.6.2.*
 
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [CLI Command Factories](#cli-command-factories)
-- [Feedback](#feedback)
-- [SemVer](#semver)
-- [License](#license)
-
 ## Features
 
 - Provides an abstraction over `System.Diagnostics.Process` with `CliCommand` and `ProgramCli` classes.
@@ -130,6 +120,23 @@ Any feedback, issues and feature requests are welcome.
 If you faced an issue please report it to [Atata.Cli Issues](https://github.com/atata-framework/atata-cli/issues),
 [ask a question on Stack Overflow](https://stackoverflow.com/questions/ask?tags=atata+csharp) using [atata](https://stackoverflow.com/questions/tagged/atata) tag
 or use another [Atata Contact](https://atata.io/contact/) way.
+
+## Contact author
+
+Contact me, Yevhenii Shunevych, if you need help with test automation using the Atata Framework.
+You can [hire me for test automation development or consulting](https://atata.io/consulting/) if you are looking for a high-quality, maintainable automation solution for your project.
+
+- LinkedIn: https://www.linkedin.com/in/yevgeniy-shunevych
+- Email: yevgeniy.shunevych@gmail.com
+- Consulting: https://atata.io/consulting/
+
+## Sponsorship
+
+Many thanks to the sponsors that regularly support the development of Atata Framework through donations:
+
+- **[Lombiq Technologies](https://lombiq.com/)**
+
+If Atata Framework is useful to you or your company, consider supporting the framework development with a [donation](https://atata.io/donate/).
 
 ## Contributing
 
