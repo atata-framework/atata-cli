@@ -34,7 +34,7 @@ Install [`Atata.Cli`](https://www.nuget.org/packages/Atata.Cli/) NuGet package.
 
 ## Usage
 
-### Execute Command to Get Value
+### Execute command to get value
 
 ```cs
 CliCommandResult result = new ProgramCli("dotnet")
@@ -43,7 +43,7 @@ CliCommandResult result = new ProgramCli("dotnet")
 string version = result.Output;
 ```
 
-### Execute Command in Directory
+### Execute command in directory
 
 ```cs
 new ProgramCli("dotnet")
@@ -51,7 +51,7 @@ new ProgramCli("dotnet")
     .Execute("build -c Release");
 ```
 
-### Execute Command Through Command Shell
+### Execute command through command shell
 
 ```cs
 new ProgramCli("npm", useCommandShell: true)
@@ -60,7 +60,7 @@ new ProgramCli("npm", useCommandShell: true)
 
 *The default command shell for Windows is "cmd", for other OSs it is "sh".*
 
-### Execute Command Through Specific Command Shell
+### Execute command through specific command shell
 
 ```cs
 new ProgramCli("npm", new BashShellCliCommandFactory("-login"))
@@ -75,17 +75,17 @@ new ProgramCli("npm")
     .Execute("install -g html-validate");
 ```
 
-### Set Default Shell CLI Command Factory
+### Set default shell CLI command factory
 
 The default shell CLI command factory can be set in a global setup/initialization method.
 
-#### Set for Any Operating System
+#### Set for any operating system
 
 ```cs
 ProgramCli.DefaultShellCliCommandFactory = new BashShellCliCommandFactory();
 ```
 
-#### Set Specific to Operating System
+#### Set specific to operating system
 
 ```cs
 ProgramCli.DefaultShellCliCommandFactory = OSDependentShellCliCommandFactory
@@ -93,7 +93,7 @@ ProgramCli.DefaultShellCliCommandFactory = OSDependentShellCliCommandFactory
     .UseForOtherOS(new BashShellCliCommandFactory("-login"));
 ```
 
-## CLI Command Factories
+## CLI command factories
 
 There are several predefined classes that implement `ICliCommandFactory`:
 
